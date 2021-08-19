@@ -1,0 +1,86 @@
+/* CLASSES CRIADAS */
+
+.bg-secondary-2{
+    background: #f3f3f3;
+}
+
+/* ====================================== */
+
+
+
+/* CABEÇALHO */
+
+body.custom_webapp{
+	overflow-x: hidden;
+}
+
+body.text_generator{
+	overflow-x: hidden;
+}
+
+#header nav{
+    width: 100%;
+    padding: 15px;
+}
+
+#header a{
+    margin-left: 20px;
+}
+
+/* ====================================== */
+
+
+
+/* CORPO */
+
+#btn_pages{
+    width: auto;
+}
+
+#btn_pages button{
+    font-weight: 500;
+    width: 150px;
+    height: 145px;
+    margin: 5px;
+}
+
+#btn_pages i{
+    font-size: 40px;
+}
+
+#btn_pages div{
+    margin-top: 4px;
+}
+
+#qrcode > canvas{
+    width: 350px;
+    height: 350px;
+    max-width: 350px;
+    max-height: 350px;
+}
+
+
+/* ====================================== */
+
+
+
+.tooltiptext {
+    visibility: hidden;
+    top: 223px;
+    right: 137px;
+    position: fixed;
+    color: white;
+    background-color: #333;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+
+.tooltiptext::after { 
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}

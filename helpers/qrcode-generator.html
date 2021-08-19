@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gerador QrCode</title>
+        <link rel="stylesheet" type="text/css" href="../style.css">
+        <link rel="stylesheet" type="text/css" href="helpers_style.css">
+		<link rel="stylesheet" type="text/css" href="../vendor/bootstrap.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    </head>
+    <body class="custom_webapp">
+        <header>
+			<section>
+				<nav class="row bg-gradient bg-success">
+					<div class="p-2 col-2 d-flex justify-content-center align-items-center">
+						<a id="bt_voltar" href="helpers.html" class="btn btn-success border border-1 btn-sm"><i class="fas fa-arrow-left"></i></a>
+					</div>
+					<h2 class="col-8 text-light d-flex justify-content-center align-items-center">Gerador QrCode</h2>
+					<div class="p-2 col-12 bg-secondary d-flex justify-content-center text-secondary"></div>
+				</nav>
+			</section>
+		</header>
+        <main class="bg-secondary-2 p-4">
+            <section class="mx-auto d-block">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Texto ou link</label>
+                    <input id="texto" type="text" class="form-control" id="exampleFormControlInput1">
+                </div>
+                <label for="basic-url" class="form-label">Logo</label>
+                <div class="col input-group mb-3">
+                    <input type="file" id="formFile" accept="image/*" class="form-control" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-danger" type="button" id="button-addon2">Limpar</button>
+                </div>
+
+                <div class="row">
+                    <div class="col mt-5">
+                        <label for="exampleFormControlInput1" class="form-label">Tamanho do QrCode</label>
+                        <div class="input-group">
+                            <input id="qrcode-size" class="col form-control" type="number" name="indexModelo" value="600">
+                            <span class="col-4 input-group-text">px</span>
+                        </div>
+
+                        <label for="exampleFormControlInput1" class="form-label mt-3">Tamanho da logo</label>
+                        <div class="input-group">
+                            <input id="logo-size" class="col form-control" type="number" name="indexModelo" value="300">
+                            <span class="col-4 input-group-text">px</span>
+                        </div>
+                    </div>
+
+                    <div id="divQrCode" class="col d-flex justify-content-center">
+                        <a id="qrcode" href="" download="QrCode.png"></a>
+                        <canvas id="canvaBranco" width="350" height="350" style="background-color: white;"></canvas>
+                    </div>
+                </div>
+                <span class="tooltiptext">Clique para baixar</span>
+            </section>
+        </main>
+        <footer class="p-4">
+            <div class="container">
+                <div class="d-grid gap-2">
+                    <button id="btnGerar" class="btn btn-primary" type="button">Gerar QrCode</button>
+                </div>
+            </div>
+        </footer>
+        <script src="../vendor/jquery-3.5.1.min.js"></script>
+        <script src="../vendor/bootstrap.js"></script>
+        <script src="qrcode/EasyQRCodeJS-master/src/easy.qrcode.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="qrcode-generator.js"></script>
+    </body>
+</html>

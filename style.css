@@ -1,0 +1,202 @@
+/* REMOVE A BARRA DE ROLAGEM QUE (POR ALGUM MOTIVO) APARECE NO FIM DAS PÁGINAS DE LISTAGEM */
+
+body.lista_modelos{
+	overflow-x: hidden;
+}
+
+body.lista_respostas{
+	overflow-x: hidden;
+}
+
+body.lista_itens{
+	overflow-x: hidden;
+}
+
+/* ====================================== */
+
+
+
+/* TAMANHO DAS COLUNAS DE CADA PROPRIEDADE DE MODELO, RESPOSTA E ITEM */
+
+select.status, th.status{
+	min-width: 85px;
+	width: 85px;
+}
+select.origem, th.origem{
+	min-width: 250px;
+	width: 250px;
+}
+input.sku, th.sku{
+	min-width: 102px;
+	width: 102px;
+}
+input.titulo, th.titulo{
+	min-width: 150px;
+}
+input.t-titulo, th.t-titulo{
+	min-width: 130px;
+}
+select.categoria, th.categoria{
+	min-width: 150px;
+}
+select.modelo, th.modelo{
+	min-width: 150px;
+}
+textarea, th.descricao{
+	min-width: 250px;
+}
+input.preco, th.preco{
+	min-width: 60px;
+	width: 60px;
+}
+input.t-preco, th.t-preco{
+	min-width: 70px;
+	width: 70px;
+}
+input.maximo, th.maximo{
+	min-width: 40px;
+	width: 40px;
+}
+
+input.novo-preco, th.novo-preco{
+	min-width: 40px;
+	width: 40px;;
+}
+
+input.exclui-preco, th.exclui-preco{
+	min-width: 40px;
+	width: 40px;;
+}
+
+input.espaco, th.espaco{
+	min-width: 60px;
+	width: 60px;
+}
+
+select.exibir, th.exibir{
+	min-width: 85px;
+	width: 85px;
+}
+
+select.robo1, th.robo1, select.robo2, th.robo2, select.webapp1, th.webapp1, select.webapp2, th.webapp2, select.menu1, th.menu1, select.menu2, th.menu2, select.entrega, th.entrega, select.pontos, th.pontos{
+	min-width: 85px;
+	width: 85px;
+}
+
+select.precos, th.precos{
+	min-width: 110px;
+	width: 110px;
+}
+
+select.template, th.template{
+	min-width: 250px;
+	width: 250px;
+}
+
+select.grupo, th.grupo{
+	min-width: 250px;
+	width: 250px;
+}
+
+/* ====================================== */
+
+
+
+/* TAMANHO DA COLUNA COM BOTÃO ATUALIZAR */
+
+input.atualiza-modelo, th.atualiza-modelo{
+	min-width: 40px;
+	width: 40px;;
+}
+
+input.atualiza-resposta, th.atualiza-resposta{
+	min-width: 40px;
+	width: 40px;;
+}
+
+input.atualiza-item, th.atualiza-item{
+	min-width: 40px;
+	width: 40px;;
+}
+
+/* ====================================== */
+
+
+
+/* OUTROS  */
+
+div.cartao-abas{
+	min-width: 310px;
+	width: 310px;
+}
+
+div.cartao-propriedades{
+	min-width: 310px;
+	width: 310px;
+}
+
+div.cartao-abas-2{
+	min-width: 400px;
+	width: 400px;
+}
+
+div.cartao-propriedades-2{
+	min-width: 400px;
+	width: 400px;
+}
+
+header{
+	min-width: 300px;
+}
+
+.copyright{
+	font-size: 12px;
+}
+
+th.prop-modelo-ext{
+	vertical-align: middle;
+}
+
+th.prop-resposta-ext{
+	vertical-align: middle;
+}
+
+th.prop-item-ext{
+	vertical-align: middle;
+}
+
+/* ====================================== */
+
+
+
+/* ALERTA DE CONFIG SALVA DA PÁGINA OPTIONS */
+
+.alertSave{
+	opacity: 0%;
+}
+
+.alertSaveShow{
+	opacity: 100%;
+	animation-name: alertSaveShow;
+	animation-duration: 1s;
+	animation-direction: alternative;
+}
+@keyframes alertSaveShow{
+	0% { opacity: 0%; }
+	100% { opacity: 100%; }
+
+}
+
+.alertSaveHide{
+	opacity: 0%;
+	animation-name: alertSaveHide;
+	animation-duration: 1s;
+	animation-direction: alternative;
+}
+@keyframes alertSaveHide{
+	0% { opacity: 100%; }
+	100% { opacity: 0%; }
+
+}
+
+/* ====================================== */

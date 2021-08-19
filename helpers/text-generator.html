@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<title>Menu Maker Pedzap</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="../vendor/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="helpers_style.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+	</head>
+	<body class="text_generator">
+        <header>
+            <nav class="row bg-gradient bg-success">
+                <div class="p-2 col-2 d-flex justify-content-center align-items-center">
+                    <a href="helpers.html" class="btn btn-success border border-1 btn-sm"><i class="fas fa-arrow-left"></i></a>
+                </div>
+
+                <h3 class="col-8 text-light d-flex justify-content-center align-items-center">Gerador de Mensagem</h3>
+
+                <div class="p-2 col-2 d-flex justify-content-center align-items-center">
+                    <a id="bt_refresh_page" class="btn btn-success border border-1 btn-sm"><i class="fas fa-redo-alt"></i></a>
+                </div>
+            </nav>
+		</header>
+        <div class="row p-2 bg-secondary mb-2"></div>
+        <main class="container">
+            <section class="row">
+                <div class="col-3">
+                    <div class="form-check form-switch">
+                        <label>Sorteio</label>
+                        <input type="checkbox" id="bt_sorteio" class="form-check-input" checked>
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Webapp</label>
+                        <input type="checkbox" id="bt_webapp" class="form-check-input" checked>
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Robô</label>
+                        <input type="checkbox" id="bt_robo" class="form-check-input">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>App</label>
+                        <input type="checkbox" id="bt_app" class="form-check-input">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Pontos</label>
+                        <input type="checkbox" id="bt_pontos" class="form-check-input">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Desconto</label>
+                        <input type="checkbox" id="bt_desconto" class="form-check-input">
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Entrega</label>
+                        <input type="checkbox" id="bt_entrega" class="form-check-input">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="input-group flex-nowrap">
+                        <select class="form-select" id="inicio">
+                            <option value="Bem vindo(a) ao">Bem vindo(a) ao</option>
+                            <option value="Bem vindo(a) à">Bem vindo(a) à</option>
+                        </select>
+                        <input type="text" id="nome" placeholder="Bom Tempero" class="form-control">
+                        <select class="form-select" id="emoji" style="max-width: 70px;">
+                            <option value="😋">😋</option><div class="dropdown">
+                                <option value="🍔">🍔</option>
+                                <option value="🍕">🍕</option>
+                                <option value="🍱">🍱</option>
+                                <option value="🍧">🍧</option>
+                                <option value="🍨">🍨</option>
+                                <option value="🍰">🍰</option>
+                                <option value="🧁">🧁</option>
+                                <option value="🍽️">🍽️</option>
+                                <option value="🍩">🍩</option>
+                                <option value="🍪">🍪</option>
+                                <option value="🍻">🍻</option>
+                                <option value="🥩">🥩</option>
+                                <option value="🥚">🥚</option>
+                                <option value="🍟">🍟</option>
+                                <option value="🥘">🥘</option>
+                                <option value="🍻">🍻</option>
+                                <option value="🥘">🥘</option>
+                                <option value="🎂">🎂</option>
+                            </select>
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_webapp">
+                            <span class="input-group-text" id="https1">https://</span>
+                            <input type="text" id="subdominio" class="form-control" placeholder="bomtempero">
+                            <span class="input-group-text" id="dominio">.pedzap.com.br</span>
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_robo">
+                            <span class="input-group-text" id="https2">https://www.pedzap.com.br/h/</span>
+                            <input type="text" id="codigo" maxlength="6" class="form-control" placeholder="SEEII5">
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_app">
+                            <span class="input-group-text">Link App da Play Store</span>
+                            <input type="text" id="app" class="form-control" placeholder="https://play.google.com/">
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_pontos">
+                            <span class="input-group-text">Pontos a partir de R$</span>
+                            <input type="number" id="minimo" class="form-control" value="0">
+                            <span class="input-group-text">,00</span>
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_desconto">
+                            <select class="form-select" id="pedido">
+                                <option value=" no 1º pedido ">Primeiro pedido</option>
+                                <option value=" ">Todos os pedidos</option>
+                            </select>
+                            <input type="number" id="percentual" class="form-control" value="5" style="max-width: 60px;">
+                            <span class="input-group-text">% em desconto</span>
+                        </div>
+                        <div class="input-group flex-nowrap" id="div_entrega">
+                            <span class="input-group-text">Entrega grátis</span>
+                            <select class="form-select" id="entrega">
+                                <option value=" no 1º pedido ">Primeiro pedido</option>
+                                <option value=" ">Todos os pedidos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="col-10 offset-1 d-block btn btn-success bg-gradient btn-sm mt-4 mb-4" id="copiar" style="margin-top: 10px;">Copiar Mensagem</button>
+                </section>
+            </main>
+        <div class="container p-2">
+            <textarea class="form-control" id="msg" rows="12" disabled></textarea>
+          </div>
+		<script src="../vendor/jquery-3.5.1.min.js"></script>
+        <script src="../vendor/bootstrap.js"></script>
+        <script src="text-generator.js"></script>
+	</body>
+</html>

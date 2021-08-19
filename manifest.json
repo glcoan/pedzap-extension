@@ -1,0 +1,64 @@
+{
+	"manifest_version": 2,
+
+	"name": "Menu Maker Pedzap",
+	"version": "2.2.1",
+	"author": "Gabriel Coan",
+	"description": "Facilita a criação/alteração de cardápios do Pedzap",
+	"icons": {
+		"128": "images/icon.png",
+		"48": "images/icon.png",
+		"16": "images/icon.png"
+	},
+
+	"browser_action": {
+		"default_title":"Menu Maker Pedzap",
+		"default_popup":"popup.html",
+		"default_icon":"images/icon.png"
+	},
+
+	"options_page": "options.html",
+
+	"content_scripts": [
+		{
+			"matches": [
+				"https://*.pedzap.com.br/*"
+			],
+			"js": [
+				"content.js",
+				"helpers/qrcode/EasyQRCodeJS-master/dist/easy.qrcode.min.js"
+			]
+		},
+		{
+			"matches": [
+				"https://*.pedzap.com.br/*"
+			],
+			"js": [
+				"dark-mode.js"
+			],
+			"run_at": "document_start"
+		}
+	],
+
+	"background": {
+		"scripts": [
+			"backgrounds/background.js",
+			"backgrounds/contextMenus.js",
+			"backgrounds/backgroundCloseTabs.js",
+			"backgrounds/backgroundAutoCardapio.js",
+			"backgrounds/backgroundModels.js",
+			"backgrounds/backgroundAnswers.js",
+			"backgrounds/backgroundItems.js",
+			"backgrounds/backgroundCustomWebapp.js"
+		],
+		"persistent": true
+	},
+
+	"permissions": [
+		"tabs",
+		"activeTab",
+		"<all_urls>",
+		"contextMenus",
+		"storage"
+	]
+}
