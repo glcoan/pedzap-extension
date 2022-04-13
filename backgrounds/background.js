@@ -233,7 +233,7 @@ function autoPrepare(){
 
 				setTimeout(function(){
 					chrome.tabs.remove(id);
-				},8000);
+				},20000);
 			}
 		});
 	});

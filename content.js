@@ -71,8 +71,10 @@ var verifyEditConfigs = setInterval(() => {
 
 if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !insertGroup && !editTemplate && !editCategory && !editGroup) && (listGroups || listCategories || listTemplates || listItems || listModels || listQuestions || listAnswers || listOrders || listClients)){
 	
-	document.querySelector("#datatable_ajax_length > label > select").selectedIndex = 7;
-	document.querySelector("#datatable_ajax_length > label > select").dispatchEvent(new Event('change'));
+	if(!listOrders){
+		document.querySelector("#datatable_ajax_length > label > select").selectedIndex = 7;
+		document.querySelector("#datatable_ajax_length > label > select").dispatchEvent(new Event('change'));
+	}
 
 	function getLinks(){
 		var edit_all = Array.from(document.querySelectorAll("[data-original-title='Editar'"));
