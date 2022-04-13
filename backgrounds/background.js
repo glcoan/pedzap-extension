@@ -19,8 +19,6 @@ const urlWebapp = "webapp/globais/home";
 const urlEstab = "/estabelecimento";
 const urlAdmin = "/administrador";
 
-
-
 /* ============= Tema padrão ============ */
 
 function temaPadrao() {

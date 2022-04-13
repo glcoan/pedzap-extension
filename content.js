@@ -10,10 +10,6 @@ const listAnswers = window.location.pathname.includes('/respostas/index');
 const listOrders = window.location.pathname.includes('/pedidos');
 const listClients = window.location.pathname.includes('/clientes');
 
-if(window.location.pathname.includes('/webapp/globais/cardapio/') || window.location.pathname.includes('/webapp/globais/home/')){
-	var contentWebAppQrCode = true;
-}
-
 const insertCategory = window.location.pathname.includes('/categorias/inserir');
 const insertTemplate = window.location.pathname.includes('/templates/inserir');
 const insertQuestion = window.location.pathname.includes('/perguntas/inserir');
@@ -22,6 +18,7 @@ const insertItem = window.location.pathname.includes('/itens/inserir/');
 const insertModel = window.location.pathname.includes('/modelos/inserir/');
 const insertAnswer = window.location.pathname.includes('/respostas/inserir/');
 const insertPrinter = window.location.pathname.includes('/estabelecimentos_impressoras/inserir');
+const insertBot = window.location.pathname.includes('/administrador/bots/inserir');
 
 const editTemplate = window.location.pathname.includes('/templates/editar');
 const editCategory = window.location.pathname.includes('/categorias/editar');
@@ -30,19 +27,47 @@ const editGroup = window.location.pathname.includes('/cardapios_grupos/editar');
 const ordering = window.location.pathname.includes('/ordenacao');
 const register = window.location.pathname.includes('/completar/');
 
-// TROLAGEM NOTIFICAÇÕES
+var verifyEditConfigs = setInterval(() => {
+	console.log('intervalo');
+	console.log(editConfigs);
+	if(editConfigs != undefined){
+		clearInterval(verifyEditConfigs);
+		if(editConfigs == true){
+				
+			var btn1 = '<a class="btn btn-circle green tooltips" id="ext-copy-address" '+
+			'data-original-title="[EXT] Copiar Endereço" data-placement="bottom" '+
+			'style="margin: 17px 0px 17px 2px; width: 50px"><i class="fa fa-map-marker"></i></a>';
+			document.getElementById('estBotoes').insertAdjacentHTML('beforeend', btn1);
+			
+			var button = document.getElementById("ext-copy-address");
+			button.addEventListener("click", ()=>{
+				var address = document.querySelector("#est_endereco").value;
+				var number = document.querySelector("#est_numero").value;
+				var complement = document.querySelector("#est_complemento").value;
+				var district = document.querySelector("#est_bairro").value;
+				var city = document.querySelector("#estabelecimentos_cid_id").selectedIndex + 1;
+				city = document.querySelector("#estabelecimentos_cid_id > option:nth-child("+city+")").innerText;
+				var state =  document.querySelector("#estabelecimentos_cid_uf").value;
+				
+				if(complement == ''){
+					var completeAddress = address+', '+number+' - '+district+' - '+city+'/'+state;
+				}else{
+					var completeAddress = address+', '+number+', '+complement+' - '+district+' - '+city+'/'+state;
+				}
 
-//var pedido = document.querySelector("#mp3_novo_pedido");
-//var ajuda = document.querySelector("#mp3_ajuda");
-//var notificacao = document.querySelector("#mp3_notificacao");
+				var textareaValue = document.querySelector("#est_anotacoes").value;
+				var textarea = document.querySelector("#est_anotacoes");
 
-//pedido.parentNode.removeChild(pedido);
-//ajuda.parentNode.removeChild(ajuda);
-//notificacao.parentNode.removeChild(notificacao);
+				textarea.value = completeAddress;
+				textarea.select();
+				document.execCommand("copy");
+				alert('Endereço copiado para a área de transferência!\n\n"'+completeAddress+'"');
 
-//document.querySelector("body").insertAdjacentHTML('afterbegin', '<audio id="mp3_novo_pedido" controls="" style="display: none"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/pararanpanpanpan.mp3" type="audio/ogg"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/pararanpanpanpan.mp3" type="audio/mpeg"></audio>');
-//document.querySelector("body").insertAdjacentHTML('afterbegin', '<audio id="mp3_ajuda" controls="" style="display: none"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/pia%20de%20bosta.mp3" type="audio/ogg"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/pia%20de%20bosta.mp3" type="audio/mpeg"></audio>');
-//document.querySelector("body").insertAdjacentHTML('afterbegin', '<audio id="mp3_notificacao" controls="" style="display: none"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/gemidao.mp3" type="audio/ogg"><source src="https://menumakerpedzap.000webhostapp.com/audiostroll/gemidao.mp3" type="audio/mpeg"></audio>');
+				textarea.value = textareaValue;
+			});
+		}
+	}
+}, 100);
 
 if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !insertGroup && !editTemplate && !editCategory && !editGroup) && (listGroups || listCategories || listTemplates || listItems || listModels || listQuestions || listAnswers || listOrders || listClients)){
 	
@@ -144,131 +169,86 @@ if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !inser
 			getLinks();
 		}, 1000);
 	});
+	
+	/*if (listItems || listModels || listAnswers) {
+		document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<a class="btn purple" style="display: block;" id="bt_status_all"><i class="fa fa-check-circle"></i></a>');
+		document.querySelector("#bt_status_all").addEventListener("click", ()=>{
+			document.querySelectorAll("a[href*='set_status']").forEach((btn)=>{
+				btn.click();
+			});
+		});
+	}*/
+
+	// BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
+	if (listItems || listModels || listAnswers) {
+		var btn_status_1 = '<a class="btn green-jungle btn-icon-only" id="btn_status_1"><i class="fa fa-check-circle"></i></a>';
+		var btn_status_2 = '<a class="btn blue btn-icon-only" id="btn_status_2"><i class="fa fa-check-circle"></i></a>';
+		var btn_status_3 = '<a class="btn grey-steel btn-icon-only" id="btn_status_3"><i class="fa fa-check-circle"></i></a>';
+		var btn_status_4 = '<a class="btn red-thunderbird btn-icon-only" id="btn_status_4"><i class="fa fa-check-circle"></i></a>';
+
+		if(listModels){
+			document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<div style="width: 112px; margin-left: -8px;">'+btn_status_1+btn_status_2+btn_status_3+'</div>');
+		}else{
+			document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<div style="width: 151px; margin-left: -8px;">'+btn_status_1+btn_status_2+btn_status_3+btn_status_4+'</div>');
+		}
+		function changeStatus(status){
+			var allButtonsDone = true;
+			var interval = setInterval(()=>{
+				document.querySelectorAll("a[href*='set_status']").forEach((btn)=>{
+					if(btn.classList.contains(status) == false){
+						btn.click();
+						allButtonsDone = false;
+					}
+				});
+				if(allButtonsDone == true){
+					clearInterval(interval);					
+				}else{
+					allButtonsDone = true;
+				}
+			}, 1000);
+		}
+		
+		document.querySelector("#btn_status_1").addEventListener("click", ()=>{
+			var ativo = "green-jungle";
+			if(confirm("Confirme para definir todos como ATIVOS:")){
+				changeStatus(ativo);
+			}
+		});
+
+		document.querySelector("#btn_status_2").addEventListener("click", ()=>{
+			var suspenso = "blue";
+			if(confirm("Confirme para definir todos como SUSPENSOS:")){
+				changeStatus(suspenso);
+			}
+		});
+
+		document.querySelector("#btn_status_3").addEventListener("click", ()=>{
+			var desativado = "grey-steel";
+			if(confirm("Confirme para definir todos como DESATIVADOS:")){
+				changeStatus(desativado);
+			}
+		});
+
+		if(listItems){
+			document.querySelector("#btn_status_4").addEventListener("click", ()=>{
+				var bloqueado = "red-thunderbird";
+				if(confirm("Confirme para definir todos como BLOQUEADOS:")){
+					changeStatus(bloqueado);
+				}
+			});
+		}
+		if(listAnswers){
+			document.querySelector("#btn_status_4").classList.add("disabled");
+		}
+
+	}
+	// FIM DO SCRIPT DOS BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
+
 }
 
-/* GERADOR QRCODE NA PÁGINA DO WEBAPP */
-
-if(contentWebAppQrCode){
-
-	var color1 = document.querySelector("#webapp-topo").style.background;
-	var color2 = document.querySelector("#bt-menu").style.color;
-	if(color1.length > 20){
-		var color1 = '#00BC69';
-		var color2 = '#FFFFFF';
-	}
-	console.log(color1);
-	console.log(color2);
-
-	setTimeout(function(){
-		document.querySelector("#balaoQrCode").style.visibility = 'visible';
-	}, 2100);
-
-	function modalQrCode() {
-		document.querySelector("head").insertAdjacentHTML('beforeend',
-			'<style> #balaoQrCode{ position: fixed; right: 10px; top: 100px; visibility: hidden;'+
-			'animation-name: balao; animation-delay: 2s; animation-duration: 1.2s; animation-direction: alternative; box-shadow: 2px 2px 10px -3px #555; }'+
-			'@keyframes balao{ 0% { right: -900px; top: 100px; } 80% { right: 15px; top: 100px; } 85% { right: 5px; top: 100px; }'+
-			'90% { right: 12px; top: 100px; } 95% { right: 8px; top: 100px; } 100% { right: 10px; top: 100px; }}'+
-			'.tooltiptext::after { content: ""; position: absolute; top: 38%; left: 100%; border-width: 5px;'+
-			'border-style: solid; border-color: transparent transparent transparent #333; } </style>'
-		);
-
-		document.querySelector(".page-container").insertAdjacentHTML('beforeend',
-			'<div id="balaoQrCode" class="pt-2 img-rounded" style="width: 90px; height: 115px; background-color: #FFF; padding: 2px 5px 5px 5px;">'+
-				'<div>'+
-					'<img src="https://www.pedzap.com.br/uploads/estabelecimentos/644_174_644_webapp_logomarca_256-_1__full.png" style="margin: 0px 0px 2px 2px; width: 20px;">'+
-					'<button id="btnCloseQrCode" type="button" class="btn btn-link" style="margin: 0px 0px 2px 40px; padding: 2px; color: #4e4e4e;"><i class="fa fa-times"></i></button>'+
-				'</div>'+
-				'<div>'+
-					'<button id="btnGeraQrCode" type="button" class="btn btn-info" style="width: 80px; height: 80px; padding-top: 33px; background-color: '+color1+'; border: none;">'+
-						'<a href="" style="color: '+color2+';" download="QrCode.png"><i class="fa fa-qrcode fa-5x"></i></a>'+
-					'</button>'+
-				'</div>'+
-				'<span class="tooltiptext img-rounded" style="top: 148px; right: 100px; position: fixed; color: white; background-color: #333; padding: 3px; visibility: hidden;">'+
-					'QrCode baixado com sucesso!<br>Clique <a id="editQrcode" href="#" style="color: #00f1aa;">aqui</a> para customizar'+
-				'</span>'+
-			'</div>'+
-			'<div id="qrCodeGerado" hidden></div>'
-		);
-	}
-
-	function geraQrcode() {
-		var tagQrCode = document.getElementById("qrCodeGerado");
-		var texto = window.location.protocol + "//" + window.location.hostname + "/";
-		var logo = document.querySelector("#logo > img");
-
-		if(logo){
-			logo = logo.src.replace('_128', '')
-			if(logo.includes('?cfc=')){
-				logo = logo.slice(0, -13);
-				console.log('TEM SETE CARACTERES!');
-			}
-			if(logo.slice(-1) != 'g'){
-				logo = logo + 'g';
-			}
-		}
-		console.log(logo);
-
-		// Options
-		var options = {
-			text: texto,
-			width: 600,
-			height: 600,
-			logo: logo,
-			logoWidth: 270,
-			logoHeight: 270,
-			logoBackgroundTransparent: true,
-			quietZone: 20,
-			onRenderingEnd: () => {
-				var canvas = document.querySelector('#qrCodeGerado > canvas');
-				var dataURL = canvas.toDataURL();
-			
-				document.querySelector("#btnGeraQrCode > a").href = dataURL;
-				console.log("Link injetado!");
-			}
-		};
-		
-		// Create QRCode Object
-		new QRCode(tagQrCode, options);
-	}
-
-	modalQrCode();
-	//btnModalQrCode();
-	setTimeout(() => {
-		geraQrcode();
-	}, 1000);
-
-
-	document.getElementById('btnCloseQrCode').addEventListener("click", function(){
-		let id = null;
-		//let id2 = null;
-		const elem = document.getElementById('balaoQrCode');
-		//const elem2 = document.getElementById('btnBalaoEscondido');
-		document.querySelector(".tooltiptext").style.visibility = "hidden";
-		let pos = 10;
-		//let pos2 = -80;
-		clearInterval(id);
-		//clearInterval(id2);
-
-		id = setInterval(frame, 1);
-		function frame() {
-			if (pos == 300) {
-				clearInterval(id);
-				elem.style.visibility = "hidden";
-			} else {
-				pos++;
-				elem.style.right = "-" + pos + "px";
-			}
-		}
-	})
-
-	document.getElementById('btnGeraQrCode').addEventListener("click", function(){
-		document.querySelector(".tooltiptext").style.visibility = "visible";
-	});
-
-	document.querySelector("#editQrcode").addEventListener('click', function(){
-		chrome.runtime.sendMessage({mensagem: 'Ola'});
-	});
+if(insertBot){
+	document.querySelector("#bot_status").selectedIndex = 3;
+	document.querySelector("#bot_status").dispatchEvent(new Event('change'));
 }
 
 if(register){
@@ -280,7 +260,11 @@ if(register){
 	// CONFIGURAÇÕES
 	document.querySelector("#est_entrega").selectedIndex = 1;
 	document.querySelector("#est_entrega").dispatchEvent(new Event('change'));
+	document.querySelector("#est_pedidominimo_entrega").value = 0;
+	document.querySelector("#est_pedidominimo_entrega").dispatchEvent(new Event('input'));
 
+
+	// DEIXAR ESSA PARTE MESMO QUE NÃO ESTEJA MAIS APARECENDO NA RECEPÇÃO, ELA APENAS ESTÁ ESCONDIDA
 	document.querySelector("#est_cardapio_modo").selectedIndex = 2;
 	document.querySelector("#est_cardapio_modo").dispatchEvent(new Event('change'));
 
@@ -310,13 +294,21 @@ if(register){
 	// COLOCA O EMAIL DA ABA DADOS NO USUÁRIO
 	document.querySelector("#usu_email").value = document.querySelector("#est_emails").value;
 	
-	// COLOCA O NOME FANTASIA NOS CAMPOS DE NOME DO WEBAPP E MENU
+	// COLOCA O WHATSAPP PRINCIPAL NO TELEFONE DO USUÁRIO
+	document.querySelector("#est_telefone1").addEventListener('keyup', function(){
+		document.querySelector("#usu_telefone").value = document.querySelector("#est_telefone1").value;
+		document.querySelector("#usu_telefone").dispatchEvent(new Event('input'));
+	});
+
+	// COLOCA O NOME FANTASIA NOS CAMPOS DE NOME DO WEBAPP E MENU E NOME DE USUÁRIO
 	document.querySelector("#est_nomefantasia").addEventListener('keyup', function(){
 		document.querySelector("#est_webapp_nome").value = document.querySelector("#est_nomefantasia").value;
 		document.querySelector("#est_menu_nome").value = document.querySelector("#est_nomefantasia").value;
 		document.querySelector("#usu_nome").value = document.querySelector("#est_nomefantasia").value;
+		document.querySelector("#usu_usuario").value = document.querySelector("#est_nomefantasia").value.toLowerCase();
+		document.querySelector("#usu_usuario").dispatchEvent(new Event('input'));
 	});
-	
+
 	//COLOCA O HORÁRIO DE FUNCIONAMENTO DO WEBAPP NO DO MENU DIGITAL
 	document.querySelector("#est_webapp_funcionamento").addEventListener('keyup', function(){
 		document.querySelector("#est_menu_funcionamento").value = document.querySelector("#est_webapp_funcionamento").value;
@@ -339,9 +331,38 @@ if(register){
 
 if(insertItem){
 
+	let recognition = null;
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(SpeechRecognition !== undefined){
+        recognition = new SpeechRecognition();
+    }
+
+	document.querySelector("#form > div:nth-child(1) > div.portlet-body > div:nth-child(3) > div > div > label").insertAdjacentHTML(
+		'afterEnd', 
+		'<div style="display: inline; margin: 0px 8px; padding: 0px 5px; color: #32C4D1; border: 1px solid #32C4D1; cursor: pointer;" id="mic-input-titulo"><i class="fa fa-microphone"></i></div>'
+	);
+
+	document.querySelector("#mic-input-titulo").addEventListener("click", ()=>{
+		if(recognition !== null) {
+			console.log("Clicou e instanciou o onjeto!")
+			recognition.onstart = () => {
+				console.log("iniciou");
+			}
+			recognition.onend = () => {
+				console.log("encerrou");
+			}
+			recognition.onresult = (e) => {
+				let texto = e.results[0][0].transcript;
+				texto = texto[0].toUpperCase() + texto.substr(1);
+				document.querySelector("#ite_titulo").value = texto;
+			}
+			recognition.start();
+		}
+	});
+
 	document.querySelector("#form > div:nth-child(1) > div.portlet-title").insertAdjacentHTML('beforeEnd', 
 	'<img id="autoDrink" class="pull-right" style="width: 40px; cursor: pointer;" '+
-	'src="https://www.pedzap.com.br/uploads/estabelecimentos/644_176_bottle_full.png">');
+	'src="https://s.cornershopapp.com/product-images/1983811.png">');
 
 	document.querySelector("#autoDrink").addEventListener('click', function(){
 
@@ -381,7 +402,24 @@ if(insertItem){
 		document.querySelector("#ite_tipo_preco").selectedIndex = 1;
 		document.querySelector("#ite_tipo_preco").dispatchEvent(new Event('change'));
 
-		document.querySelector("#ite_dias_venda_all").click();
+		//Script para marcar os checkbox de dias para venda com verificação se já está selecionado caso clique duas vezes 
+		for (let i = 0; i <= 6; i++) {
+			if(document.getElementsByClassName('dias_venda')[i].checked == true){
+				var dias = true;
+			}
+			if(dias == true){
+				break;
+			}
+			if(i == 6){
+				if(document.querySelector("#ite_dias_venda_all").checked == true){
+					document.querySelector("#ite_dias_venda_all").click();
+					document.querySelector("#ite_dias_venda_all").click();
+				}else{
+					document.querySelector("#ite_dias_venda_all").click();
+				}
+			}
+		}
+		
 	});
 }
 
@@ -395,6 +433,10 @@ if(insertModel){
 if(insertAnswer){
 	document.querySelector("#res_status").selectedIndex = 2;
 	document.querySelector("#res_status").dispatchEvent(new Event('change'));
+
+	if(document.querySelector("#res_tipo").selectedIndex == 4){
+		alert("vinculado!");
+	}
 }
 
 if(insertQuestion){
@@ -403,92 +445,150 @@ if(insertQuestion){
 }
 
 if(insertPrinter){
-	document.querySelector("#imp_status").selectedIndex = 2;
-	document.querySelector("#imp_status").dispatchEvent(new Event('change'));
 
-	document.querySelector("#imp_qztray").selectedIndex = 3;
-	document.querySelector("#imp_qztray").dispatchEvent(new Event('change'));
+	document.querySelector("#form > div.portlet > div.portlet-title").insertAdjacentHTML('beforeEnd', 
+	'<img id="autoPrinter" class="pull-right" style="width: 40px; cursor: pointer;" '+
+	'src="https://images.tcdn.com.br/img/img_prod/687149/impressora_termica_epson_tm_t20x_usb_serial_101435_1_20201212200134.png">');
 
-	document.querySelector("#todas").click();
+	document.querySelector("#autoPrinter").addEventListener('click', function(){
 
-	document.querySelector("#imp_nome").value = "Impressora";
+		
+		document.querySelector("#imp_status").selectedIndex = 2;
+		document.querySelector("#imp_status").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_qztray").selectedIndex = 3;
+		document.querySelector("#imp_qztray").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#todas").click();
+		
+		document.querySelector("#imp_nome").value = "Impressora";
 
-	document.querySelector("#imp_dispositivo").selectedIndex = 1;
-	document.querySelector("#imp_dispositivo").dispatchEvent(new Event('change'));
+		document.querySelector("#imp_template").selectedIndex = 1;
+		document.querySelector("#imp_template").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_dispositivo").selectedIndex = 1;
+		document.querySelector("#imp_dispositivo").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_tracejados").value = 30;
+		document.querySelector("#imp_tracejados").dispatchEvent(new Event('input'));
+		
+		document.querySelector("#imp_fonte").selectedIndex = 1;
+		document.querySelector("#imp_fonte").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_tamanhofonte").selectedIndex = 1;
+		document.querySelector("#imp_tamanhofonte").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_espacamentolinha").value = 10;
+		
+		document.querySelector("#imp_margemesquerda").value = 0;
+		document.querySelector("#imp_margemesquerda").dispatchEvent(new Event('input'));
+		
+		document.querySelector("#imp_margemtopo").value = 0;
+		document.querySelector("#imp_margemtopo").dispatchEvent(new Event('input'));
+		
+		document.querySelector("#imp_margemrodape").value = 3;
+		document.querySelector("#imp_margemrodape").dispatchEvent(new Event('input'));
+		
+		document.querySelector("#imp_imprimirpendente").selectedIndex = 2;
+		document.querySelector("#imp_imprimirpendente").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimiraceito").selectedIndex = 1;
+		document.querySelector("#imp_imprimiraceito").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimirpreparado").selectedIndex = 2;
+		document.querySelector("#imp_imprimirpreparado").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimirfechamento").selectedIndex = 1;
+		document.querySelector("#imp_imprimirfechamento").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_limites").selectedIndex = 2;
+		document.querySelector("#imp_imprimir_limites").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_contato").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_contato").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_realizados").selectedIndex = 2;
+		document.querySelector("#imp_imprimir_realizados").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_endereco").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_endereco").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_itens").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_itens").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_itens_preco").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_itens_preco").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_itens_codigo").selectedIndex = 2;
+		document.querySelector("#imp_imprimir_itens_codigo").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_itens_sku").selectedIndex = 2;
+		document.querySelector("#imp_imprimir_itens_sku").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_itens_quantidade").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_itens_quantidade").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_observacoes").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_observacoes").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_imprimir_total").selectedIndex = 1;
+		document.querySelector("#imp_imprimir_total").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_modo_multiplas").selectedIndex = 2;
+		document.querySelector("#imp_modo_multiplas").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_ocultar_nulos").selectedIndex = 1;
+		document.querySelector("#imp_ocultar_nulos").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_remover_acentuacao").selectedIndex = 1;
+		document.querySelector("#imp_remover_acentuacao").dispatchEvent(new Event('change'));
+		
+		document.querySelector("#imp_qrcode_entregador").selectedIndex = 1;
+		document.querySelector("#imp_qrcode_entregador").dispatchEvent(new Event('change'));
 
-	document.querySelector("#imp_tracejados").focus();
-	document.querySelector("#imp_tracejados").value = 46;
+		document.querySelector("#imp_qrcode_entregador_modo").selectedIndex = 2;
+		document.querySelector("#imp_qrcode_entregador_modo").dispatchEvent(new Event('change'));
+		
+		//document.querySelector("#botoes-flutuantes > div > div > div.hidden-xs > button:nth-child(2)").click();
+	});
+}
 
-	document.querySelector("#imp_fonte").selectedIndex = 1;
-	document.querySelector("#imp_fonte").dispatchEvent(new Event('change'));
+if(ordering){
+	document.querySelector("#estBotoes > a:last-child").remove();
+	document.querySelector("#estBotoes > a:last-child").remove();
+	sortButton = document.querySelector("#estBotoes").insertAdjacentHTML("beforeEnd", '<a class="btn btn-circle green tooltips" id="ext-sort-list"'+
+	'data-original-title="[EXT] Ordem alfabética" data-placement="bottom"'+
+	' style="margin: 17px 0px 17px 2px; width: 50px"><i class="fa fa-sort-alpha-asc"></i></a>');
 
-	document.querySelector("#imp_tamanhofonte").selectedIndex = 1;
-	document.querySelector("#imp_tamanhofonte").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_espacamentolinha").value = 10;
-
-	document.querySelector("#imp_margemesquerda").value = 0;
-
-	document.querySelector("#imp_margemtopo").value = 0;
-
-	document.querySelector("#imp_margemrodape").value = 3;
-
-	document.querySelector("#imp_imprimirpendente").selectedIndex = 2;
-	document.querySelector("#imp_imprimirpendente").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimiraceito").selectedIndex = 1;
-	document.querySelector("#imp_imprimiraceito").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimirpreparado").selectedIndex = 2;
-	document.querySelector("#imp_imprimirpreparado").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimirfechamento").selectedIndex = 1;
-	document.querySelector("#imp_imprimirfechamento").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_limites").selectedIndex = 2;
-	document.querySelector("#imp_imprimir_limites").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_contato").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_contato").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_realizados").selectedIndex = 2;
-	document.querySelector("#imp_imprimir_realizados").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_endereco").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_endereco").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_itens").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_itens").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_itens_preco").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_itens_preco").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_itens_codigo").selectedIndex = 2;
-	document.querySelector("#imp_imprimir_itens_codigo").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_itens_sku").selectedIndex = 2;
-	document.querySelector("#imp_imprimir_itens_sku").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_itens_quantidade").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_itens_quantidade").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_observacoes").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_observacoes").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_imprimir_total").selectedIndex = 1;
-	document.querySelector("#imp_imprimir_total").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_modo_multiplas").selectedIndex = 2;
-	document.querySelector("#imp_modo_multiplas").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_ocultar_nulos").selectedIndex = 1;
-	document.querySelector("#imp_ocultar_nulos").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_remover_acentuacao").selectedIndex = 1;
-	document.querySelector("#imp_remover_acentuacao").dispatchEvent(new Event('change'));
-
-	document.querySelector("#imp_qrcode_entregador").selectedIndex = 2;
-	document.querySelector("#imp_qrcode_entregador").dispatchEvent(new Event('change'));
-
-	document.querySelector("#botoes-flutuantes > div > div > div.hidden-xs > button:nth-child(2)").click();
+	var sortButton = document.getElementById("ext-sort-list");
+	sortButton.addEventListener("click", function() {
+		if(confirm("Deseja mesmo ordenar a lista? Esta ação é irreversível!")){
+			var ordem = [];
+			// Converte a string JSON retornada do input para um array de objetos
+			ordem = JSON.parse(document.querySelector("#ordenacao").value);
+			
+			// Adiciona o titulo aos objetos onde antes só tinham o ID
+			var c = 0;
+			document.querySelectorAll("#lista > ol > li > div").forEach((div)=>{
+				// Normalize remove todas as acentuações das letras
+				ordem[c] = {id: ordem[c].id, titulo:div.innerHTML.normalize("NFD")};
+				c += 1;
+			});
+			
+			// Coloca o array em ordem alfabética
+			ordem.sort((a, b)=>{
+				return (a.titulo > b.titulo) ? 1 : ((b.titulo > a.titulo) ? -1 : 0);
+			});
+			
+			// Remove o titulo dos objetos do array para inserir no input de volta
+			ordem.forEach((item)=>{
+				delete item.titulo;
+			});
+			
+			// Por fim define o valor do input que controla a ordem e salva
+			document.querySelector("#ordenacao").value = JSON.stringify(ordem);
+			document.querySelector("#ordenacao").dispatchEvent(new Event('input'));
+			document.querySelector("#botoes-flutuantes > div > div > div.hidden-xs > button:nth-child(1)").click();
+		}
+	}, false);
 }

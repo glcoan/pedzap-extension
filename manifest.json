@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 
 	"name": "Menu Maker Pedzap",
-	"version": "2.2.1",
+	"version": "2.2.9",
 	"author": "Gabriel Coan",
 	"description": "Facilita a criação/alteração de cardápios do Pedzap",
 	"icons": {
@@ -22,21 +22,29 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"https://*.pedzap.com.br/*"
-			],
-			"js": [
-				"content.js",
-				"helpers/qrcode/EasyQRCodeJS-master/dist/easy.qrcode.min.js"
-			]
-		},
-		{
-			"matches": [
-				"https://*.pedzap.com.br/*"
+				"https://www.pedzap.com.br/*"
 			],
 			"js": [
 				"dark-mode.js"
 			],
 			"run_at": "document_start"
+		},
+		{
+			"matches": [
+				"https://www.pedzap.com.br/*"
+			],
+			"js": [
+				"content.js"
+			]
+		},
+		{
+			"matches": [
+				"https://*/webapp/globais/home*"
+			],
+			"js": [
+				"content-qrcode.js",
+				"helpers/qrcode/EasyQRCodeJS-master/dist/easy.qrcode.min.js"
+			]
 		}
 	],
 

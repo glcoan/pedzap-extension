@@ -792,5 +792,15 @@ $(function(){
         });
     
     /* ====================================== */
+
+
+
+    /* BOTÃO DE MUDAR O TEMA DA PÁGINA */
     
+    $('#bt_page_theme').click(function(){
+        chrome.extension.getBackgroundPage().closeTabItem();
     });
+
+/* ====================================== */
+    
+});

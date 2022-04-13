@@ -1,6 +1,7 @@
 
 const urlEstab = window.location.pathname.includes('/estabelecimento');
 const urlAdmin = window.location.pathname.includes('/administrador');
+const editConfigs = window.location.pathname.includes('/estabelecimentos/editar');
 
 
 /* =============== TEMA PEDZAP =============== */
@@ -115,6 +116,14 @@ if(urlEstab || urlAdmin){
 				'.popover-content { background-color: #43516C!important;} '+
 				'.modal-content { background-color: #37435A!important;} '+
 				'.mt-checkbox>span { background-color: #37435a!important;} '+
+				'.panel { background-color: #26344b!important;} '+
+				'.panel-default { border-color: #1f2b3d!important;} '+
+				'.panel-default>.panel-heading { background-color: #1f2b3d!important; color: #dddddd!important;} '+
+				'.panel-title > a:hover { color: #3598dc!important;} '+
+				'table.dataTable td.sorting_1, table.dataTable td.sorting_2, table.dataTable td.sorting_3, table.dataTable th.sorting_1, table.dataTable th.sorting_2, table.dataTable th.sorting_3 {background-color: #37435a!important;}'+
+				'#estAnotacoes > div { background-color: #26344b!important;} '+
+				'body > div.page-no-javascript > div.page-container > div.page-content-wrapper > div > div:nth-child(12) > div > div > div.portlet-body > div > div > div > table > thead > tr > th { background-color: #43516c!important;}'+
+				'#form > div > div.portlet-body > div:nth-child(3) > div > div > div { background-color: #43516c!important; border-color: #43516c!important;}'+
 			'</style>'
 		);
 	}	
@@ -178,12 +187,30 @@ if(urlEstab || urlAdmin){
 				}
 			}, 0);
 
+			if(editConfigs){
+				var buscaTHead = setInterval(()=>{
+					if(document.querySelector("#custosentrega_bairro > thead")){
+						document.querySelector("#custosentrega_bairro > thead").style.backgroundColor = "#26344B";
+						clearInterval(buscaTHead);
+					}
+				}, 10);
+			}
+
 			theme = t; // Atribui a va
 		}
 		if(t === "light"){
 
 			var styleDarkMode = document.querySelector("#styleDarkMode");
 			if(styleDarkMode){ styleDarkMode.parentNode.removeChild(styleDarkMode); }
+
+			if(editConfigs){
+				var buscaTHead = setInterval(()=>{
+					if(document.querySelector("#custosentrega_bairro > thead")){
+						document.querySelector("#custosentrega_bairro > thead").style.backgroundColor = "#fff";
+						clearInterval(buscaTHead);
+					}
+				}, 10);
+			}
 
 			theme = t;
 		}
@@ -193,6 +220,19 @@ if(urlEstab || urlAdmin){
 	chrome.storage.local.get('tema', function(data){
 		tema(data.tema);
 	});
+
+	if(editConfigs){
+		var searchElement = setInterval(()=>{
+			if(document.querySelector("#custosentrega_bairro > thead")){
+				clearInterval(searchElement);
+				if(theme == "light"){
+					document.querySelector("#custosentrega_bairro > thead").setAttribute('style', 'position: sticky; top: 0; z-index: 3; background-color: #fff;');
+				}else{
+					document.querySelector("#custosentrega_bairro > thead").setAttribute('style', 'position: sticky; top: 0; z-index: 3; background-color: #26344B;');
+				}
+			}
+		}, 300);
+	}
 
 }
 

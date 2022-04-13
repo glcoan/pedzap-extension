@@ -1,5 +1,51 @@
 $(function(){
 
+/* SCRIPT TAB MENU */
+
+	var tabSlide1 = document.getElementById("tab-slide-1");
+	var tabSlide2 = document.getElementById("tab-slide-2");
+	var sectionSlide1 = document.getElementById("section-slide-1");
+	var sectionSlide2 = document.getElementById("section-slide-2");
+
+	document.getElementById("tab-1").addEventListener("click", ()=>{
+		if(tabSlide1.classList.contains("invisible") && sectionSlide1.classList.contains("invisible")){
+			tabSlide2.style.animation = "tab-slide-to-left 1s";
+			tabSlide1.style.animation = "";
+
+			sectionSlide2.style.animation = "section-slide-to-right-1 1s";
+			sectionSlide1.style.animation = "section-slide-to-right-2 1s";
+			sectionSlide1.classList.remove("invisible");
+
+			setTimeout(() => {
+				tabSlide1.classList.remove("invisible");
+				tabSlide2.classList.add("invisible");
+
+				sectionSlide2.classList.add("invisible");
+			}, 980);
+		}
+	});
+	document.getElementById("tab-2").addEventListener("click", ()=>{
+		if(tabSlide2.classList.contains("invisible") && sectionSlide2.classList.contains("invisible")){
+			tabSlide1.style.animation = "tab-slide-to-right 1s";
+			tabSlide2.style.animation = "";
+
+			sectionSlide1.style.animation = "section-slide-to-left-1 1s";
+			sectionSlide2.style.animation = "section-slide-to-left-2 1s";
+			sectionSlide2.classList.remove("invisible");
+
+			setTimeout(() => {
+				tabSlide1.classList.add("invisible");
+				tabSlide2.classList.remove("invisible");
+
+				sectionSlide1.classList.add("invisible");
+			}, 980);
+		}
+	});
+
+/* ====================================== */
+
+
+
 /* AÇÕES AO CARREGAR A PÁGINA */
 
 	// Quando o dom carrega essa função é chamada para listar os modelos
@@ -18,10 +64,16 @@ $(function(){
 	// Timeout de 1 segundo para dar tempo de carregar os registros e aplicar essas alterações
 	setTimeout(function(){
 
-		// Coloca borda verde nos elementos alterados
+		// Coloca borda verde nos elementos alterados e envia as informações para o bg
 		$("input, textarea, select").change(function(){
 			$(this).addClass('border-success');
-			$('#save_models').addClass('disabled');
+			$('#save_models').removeClass('disabled');
+
+			model = {
+				id: this.id,
+				value: this.value
+			}
+			chrome.runtime.sendMessage({model: model});
 		});
 		
 		// Coloca borda valores 0 e 1 para preços e máximos + borda verde
@@ -134,9 +186,9 @@ $(function(){
 				if(modelos){
 					$('#send_models').removeClass('disabled');
 					if(modelos.length == 1){
-						$('#qtde_modelos').html('(' + modelos.length + ' modelo)');
+						$('#qtde_modelos').html(modelos.length);
 					}else{
-						$('#qtde_modelos').html('(' + modelos.length + ' modelos)');
+						$('#qtde_modelos').html(modelos.length);
 					}
 
 					var thAtualizar = '<th scope="col" class="atualiza-modelo prop-modelo-ext"><a href="#" id="refresh_models" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
@@ -323,6 +375,7 @@ $(function(){
 
 /* FUNÇÃO PARA ENVIAR AS ALTERAÇÕES NOS MODELOS PARA AS ABAS */
 
+	/*
 	var newModel = [];
 	$('#send_models').click(function(){
 
@@ -391,6 +444,7 @@ $(function(){
             });
 		}, 1000);
 	});
+	*/
 
 /* ====================================== */
 

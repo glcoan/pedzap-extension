@@ -112,3 +112,32 @@ function saveModels(){
 		}
 	});
 }
+
+chrome.runtime.onMessage.addListener(function(request){
+	if(request.model){
+		var model = request.model.id.split('_');
+
+		var tab_id = parseInt(model[model.length - 1]);
+		var propertie = model[1];
+		var value = request.model.value;
+
+		if(propertie == "price" || propertie == "maximum"){
+
+			var priceIndex = model[2];
+			var code = 
+				'var propertie  = "' +propertie+  '"; '+
+				'var value      = "' +value+      '"; '+
+				'var priceIndex = "' +priceIndex+ '"; '
+
+		}else{
+			var code = 'var propertie = "'+propertie+'"; var value = "'+value+'"';
+		}
+
+		chrome.tabs.executeScript(tab_id, {
+			code: code
+		}, function(){
+			chrome.tabs.executeScript(tab_id, {file: 'models/bg/backgroundSendModel.js'});
+		})
+
+	}
+});

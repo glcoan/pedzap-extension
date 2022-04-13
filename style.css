@@ -15,6 +15,103 @@ body.lista_itens{
 /* ====================================== */
 
 
+.props-actived, .props-btn-actived{
+	background-color: rgba(25, 135, 84, 0.6) !important;
+	border: rgb(25, 135, 84) solid 2px !important;
+	font-weight: 600;
+	color: #ffffff;
+	cursor: pointer;
+	user-select: none;
+}
+
+.props-disabled, .props-btn-disabled{
+	background-color: rgb(220, 53, 69, 0.6) !important;
+	border: rgb(220, 53, 69) solid 2px !important;
+	font-weight: 600;
+	color: #ffffff;
+	cursor: pointer;
+	user-select: none;
+}
+
+.props-none{
+	border: rgb(0, 0, 0, .125) solid 2px !important;
+	font-weight: 600;
+	color: #adadad;
+	user-select: none;
+}
+
+.props-actived:hover, .props-disabled:hover{
+	transform: scale(1.02);
+}
+
+.props-btn-actived:hover, .props-btn-disabled:hover{
+	transform: scale(1.08);
+}
+
+
+/* STILOS DAS TAB MENUS COM TRANSIÇÃO */
+
+@keyframes tab-slide-to-right {
+	to {
+		margin-left: 104%;
+	}
+}
+@keyframes tab-slide-to-left {
+	to {
+		margin-left: -98%;
+	}
+}
+
+@keyframes section-slide-to-right-1 {
+	to {
+		margin-left: 100%;
+	}
+}
+@keyframes section-slide-to-left-1 {
+	to {
+		margin-left: -100%;
+	}
+}
+
+@keyframes section-slide-to-right-2 {
+	from{
+		margin-left: -100%;
+	}
+	to {
+		margin-left: 0%;
+	}
+}
+@keyframes section-slide-to-left-2 {
+	from{
+		margin-left: 100%;
+	}
+	to {
+		margin-left: 0%;
+	}
+}
+
+.tab-slide{
+	width: 94%;
+	height: 5px;
+	margin: 5px 0% 2px 3%;
+}
+
+.tab:hover{
+	cursor: pointer;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.slider{
+	display: block;
+}
+
+.slider > section{
+	position: absolute;
+}
+
+/* ====================================== */
+
+
 
 /* TAMANHO DAS COLUNAS DE CADA PROPRIEDADE DE MODELO, RESPOSTA E ITEM */
 
@@ -200,3 +297,10 @@ th.prop-item-ext{
 }
 
 /* ====================================== */
+
+.mic-input{
+	display: inline;
+	background-color: #adadad;
+	border-radius: 50%;
+	cursor: pointer;
+}

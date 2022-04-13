@@ -85,7 +85,10 @@ $(function(){
 
         if($("#bt_webapp").is(':checked')){
             var webapp = "📱 *FAÇA SEU PEDIDO AQUI* 👇\n";
+            //Remove espaços do subdominio e deixa em letra minuscula
             var subdominio = document.getElementById("subdominio").value.replace(/\s+/g, '').toLowerCase();
+            //Remove acentuação
+            subdominio = subdominio.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
             var url = "https://"+subdominio+".pedzap.com.br\n\n";
             msg = msg+webapp+url;
             qtde_links = qtde_links+1;
