@@ -1,6 +1,6 @@
 // ---------- AUTO CARDÁPIO ----------
 
-function backgroundAtualizaPreco(params) {
+export function backgroundAtualizaPreco(params) {
 	chrome.tabs.query({},function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -23,7 +23,7 @@ function backgroundAtualizaPreco(params) {
 	});
 }
 
-function backgroundAtualizaModelo(params) {
+export function backgroundAtualizaModelo(params) {
 	chrome.tabs.query({},function(tabs){
 		var indexModelo = params.indexModelo;
 

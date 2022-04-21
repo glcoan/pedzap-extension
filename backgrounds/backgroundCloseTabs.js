@@ -1,6 +1,6 @@
 // ---------- FECHAR ABAS ----------
 
-function closeTabGroup(){
+export function closeTabGroup(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -11,7 +11,7 @@ function closeTabGroup(){
 	});
 }
 
-function closeTabItem(){
+export function closeTabItem(){
 	chrome.tabs.query({}, function(tabs){
 		if(confirm("Deseja fechar todas as abas de ITENS?")){
 			tabs.forEach(function(tab){
@@ -24,7 +24,7 @@ function closeTabItem(){
 	});
 }
 
-function closeTabCategory(){
+export function closeTabCategory(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -35,7 +35,7 @@ function closeTabCategory(){
 	});
 }
 
-function closeTabModel(){
+export function closeTabModel(){
 	chrome.tabs.query({}, function(tabs){
 		if(confirm("Deseja fechar todas as abas de MODELOS?")){
 			tabs.forEach(function(tab){
@@ -48,7 +48,7 @@ function closeTabModel(){
 	});
 }
 
-function closeTabTemplate(){
+export function closeTabTemplate(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -59,7 +59,7 @@ function closeTabTemplate(){
 	});
 }
 
-function closeTabQuestion(){
+export function closeTabQuestion(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -70,7 +70,7 @@ function closeTabQuestion(){
 	});
 }
 
-function closeTabAnswer(){
+export function closeTabAnswer(){
 	chrome.tabs.query({}, function(tabs){
 		if(confirm("Deseja fechar todas as abas de RESPOSTAS?")){
 			tabs.forEach(function(tab){

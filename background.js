@@ -19,7 +19,15 @@ const urlWebapp = "webapp/globais/home";
 const urlEstab = "/estabelecimento";
 const urlAdmin = "/administrador";
 
-/* ============= Tema padrão ============ */
+import "./backgrounds/backgroundAutoCardapio.js";
+import "./backgrounds/backgroundItems.js";
+import "./backgrounds/backgroundModels.js";
+import "./backgrounds/backgroundAnswers.js";
+import "./backgrounds/backgroundCloseTabs.js";
+import "./backgrounds/backgroundCustomWebapp.js";
+
+
+/* ============= Tema padrão ============ 
 
 function temaPadrao() {
 	chrome.storage.local.get('temaPadrao', function(data){
@@ -36,7 +44,7 @@ temaPadrao();
 
 
 
-/* ALERTA DE ATUALIZAÇÃO */
+/* ALERTA DE ATUALIZAÇÃO 
 
 chrome.storage.local.get('v2_2_0', function(data){
 	if(!data.v2_2_0){
@@ -98,10 +106,10 @@ function countTabs(){
 			}
 		});
 
-		var itensQtde = itensArray.length;
-		var modelosQtde = modelosArray.length;
-		var respostasQtde = respostasArray.length;
-		var outrasQtde = outrasArray.length;
+		let itensQtde = itensArray.length;
+		let modelosQtde = modelosArray.length;
+		let respostasQtde = respostasArray.length;
+		let outrasQtde = outrasArray.length;
 
 		chrome.storage.local.set({'item_tabs': itensQtde});
 		chrome.storage.local.set({'model_tabs': modelosQtde});
@@ -116,11 +124,11 @@ function countTabs(){
 
 /* RECEBE AS MENSAGENS ENVIADAS PELAS ABAS PARA ARMAZENAR OS DADOS DE REGISTROS E SALVAR EM UM ARRAY NO STORAGE */
 
-modelos = [];
-max_pre = 1;
-max_tit = 1;
-respostas = [];
-itens = [];
+let modelos = [];
+let max_pre = 1;
+let max_tit = 1;
+let respostas = [];
+let itens = [];
 
 chrome.runtime.onMessage.addListener(function(request){
 	if(request.mensagem){
@@ -215,6 +223,32 @@ chrome.runtime.onMessage.addListener(function(request){
 			}
 		});
 		
+	}
+	if(request.model){
+		var model = request.model.id.split('_');
+
+		var tab_id = parseInt(model[model.length - 1]);
+		var propertie = model[1];
+		var value = request.model.value;
+
+		if(propertie == "price" || propertie == "maximum"){
+
+			var priceIndex = model[2];
+			var code = 
+				'var propertie  = "' +propertie+  '"; '+
+				'var value      = "' +value+      '"; '+
+				'var priceIndex = "' +priceIndex+ '"; '
+
+		}else{
+			var code = 'var propertie = "'+propertie+'"; var value = "'+value+'"';
+		}
+
+		chrome.tabs.executeScript(tab_id, {
+			code: code
+		}, function(){
+			chrome.tabs.executeScript(tab_id, {file: 'models/bg/backgroundSendModel.js'});
+		})
+
 	}
 });
 

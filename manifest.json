@@ -1,17 +1,19 @@
 {
-	"manifest_version": 2,
-
+	"manifest_version": 3,
 	"name": "Menu Maker Pedzap",
-	"version": "2.2.9",
-	"author": "Gabriel Coan",
+	"version": "3.0.0",
+
 	"description": "Facilita a criação/alteração de cardápios do Pedzap",
+
+	"author": "Gabriel Coan",
+	
 	"icons": {
 		"128": "images/icon.png",
 		"48": "images/icon.png",
 		"16": "images/icon.png"
 	},
 
-	"browser_action": {
+	"action": {
 		"default_title":"Menu Maker Pedzap",
 		"default_popup":"popup.html",
 		"default_icon":"images/icon.png"
@@ -49,24 +51,19 @@
 	],
 
 	"background": {
-		"scripts": [
-			"backgrounds/background.js",
-			"backgrounds/contextMenus.js",
-			"backgrounds/backgroundCloseTabs.js",
-			"backgrounds/backgroundAutoCardapio.js",
-			"backgrounds/backgroundModels.js",
-			"backgrounds/backgroundAnswers.js",
-			"backgrounds/backgroundItems.js",
-			"backgrounds/backgroundCustomWebapp.js"
-		],
-		"persistent": true
+		"service_worker": "background.js",
+		"type": "module"
 	},
+	"minimum_chrome_version": "92",
 
 	"permissions": [
 		"tabs",
 		"activeTab",
-		"<all_urls>",
 		"contextMenus",
 		"storage"
+	],
+	
+	"host_permissions": [
+		"<all_urls>"
 	]
 }

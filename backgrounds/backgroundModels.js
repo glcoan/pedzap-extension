@@ -1,4 +1,4 @@
-function editModels(){
+export function editModels(){
 	chrome.storage.local.remove('modelos');
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
@@ -17,7 +17,7 @@ function editModels(){
 	});
 }
 
-function refreshModels(identificador){
+export function refreshModels(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador){
 			tabs.forEach(function(tab){
@@ -40,7 +40,7 @@ function refreshModels(identificador){
 	});
 }
 
-function addPriceModels(identificador){
+export function addPriceModels(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador){
 			tabs.forEach(function(tab){
@@ -61,7 +61,7 @@ function addPriceModels(identificador){
 	});
 }
 
-function removePriceModels(identificador){
+export function removePriceModels(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador){
 			tabs.forEach(function(tab){
@@ -81,7 +81,7 @@ function removePriceModels(identificador){
 	});
 }
 
-function sendModels(){
+export function sendModels(){
 	chrome.storage.local.get('modelos', function(data){
 		var modelos = data.modelos;
 		if(modelos){
@@ -99,7 +99,7 @@ function sendModels(){
 	});
 }
 
-function saveModels(){
+export function saveModels(){
 	chrome.storage.local.get('modelos', function(data){
 		var modelos = data.modelos;
 		if(modelos){
@@ -112,32 +112,3 @@ function saveModels(){
 		}
 	});
 }
-
-chrome.runtime.onMessage.addListener(function(request){
-	if(request.model){
-		var model = request.model.id.split('_');
-
-		var tab_id = parseInt(model[model.length - 1]);
-		var propertie = model[1];
-		var value = request.model.value;
-
-		if(propertie == "price" || propertie == "maximum"){
-
-			var priceIndex = model[2];
-			var code = 
-				'var propertie  = "' +propertie+  '"; '+
-				'var value      = "' +value+      '"; '+
-				'var priceIndex = "' +priceIndex+ '"; '
-
-		}else{
-			var code = 'var propertie = "'+propertie+'"; var value = "'+value+'"';
-		}
-
-		chrome.tabs.executeScript(tab_id, {
-			code: code
-		}, function(){
-			chrome.tabs.executeScript(tab_id, {file: 'models/bg/backgroundSendModel.js'});
-		})
-
-	}
-});
