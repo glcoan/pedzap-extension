@@ -22,7 +22,7 @@ export const urlAdmin = "/administrador";
 import {} from "./backgrounds/Answers.js";
 import {} from "./backgrounds/AutoCardapio.js";
 import {} from "./backgrounds/backgroundItems.js";
-import {} from "./backgrounds/backgroundModels.js";
+import { editModels, refreshModels, addPriceModels, removePriceModels, sendModels, saveModels} from "./backgrounds/backgroundModels.js";
 import {} from "./backgrounds/CustomWebapp.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
@@ -80,8 +80,6 @@ setTimeout(function(){
 
 
 const functions = {
-
-	/* CONTA E CLASSIFICA AS ABAS */
 	countTabs(){
 		countTabs();
 	},
@@ -94,6 +92,41 @@ const functions = {
 	closeTabAnswer(){
 		closeTabAnswer();
 	},
+
+	editItems(){
+		countTabs();
+		editItems();
+	},
+	editModels(){
+		countTabs();
+		editModels();
+	},
+	editAnswers(){
+		countTabs();
+		editAnswers();
+	},
+
+	refreshItems(i){
+		refreshItems(i);
+	},
+	refreshModels(i){
+		refreshModels(i);
+	},
+	refreshAnswers(i){
+		refreshAnswers(i);
+	},
+
+	addPriceModels(i){
+		addPriceModels(i);
+	},
+
+	removePriceModels(i){
+		removePriceModels(i);
+	},
+
+	saveModels(){
+		saveModels();
+	}
 }
 
 /* ====================================== */
@@ -110,8 +143,8 @@ let itens = [];
 
 chrome.runtime.onMessage.addListener(function(request){
 	if(request.callFunction){
-		functions[request.callFunction]();
-		return true;
+		let message = request.callFunction.split("_");
+		message.length == 1 ? functions[message[0]]() : functions[message[0]](message[1]);
 	}
 	if(request.mensagem){
 		window.open (
@@ -232,6 +265,7 @@ chrome.runtime.onMessage.addListener(function(request){
 		})
 
 	}
+	return true;
 });
 
 /* ====================================== */

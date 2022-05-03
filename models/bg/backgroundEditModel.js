@@ -1,4 +1,5 @@
-switch(document.getElementById("mod_status").selectedIndex){
+
+/*switch(document.getElementById("mod_status").selectedIndex){
 	case 1:
 		var mod_status = 'Selecione';
 	break;

@@ -1,3 +1,5 @@
+import {urlEditarModelos} from "../background.js";
+
 export function editModels(){
 	chrome.storage.local.remove('modelos');
 	chrome.tabs.query({}, function(tabs){
@@ -5,12 +7,23 @@ export function editModels(){
 			if(tab.url.includes(urlEditarModelos)){
 
 				var id = tab.id;
-
-				chrome.tabs.executeScript(id, {
+				console.log(id);
+				function getId(id) {
+					var id = id;
+				}
+				chrome.scripting.executeScript(
+					{
+						target: {tabId: tab.id},
+						files: ['models/bg/backgroundEditModel.js'],
+						func: getId,
+						args: [id]
+					}
+				);
+				/*chrome.tabs.executeScript(id, {
 					code: 'var id = ' + id
 				}, function(){
 					chrome.tabs.executeScript(id, {file: 'models/bg/backgroundEditModel.js'});
-				});
+				});*/
 			}
 		});
 
