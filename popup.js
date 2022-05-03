@@ -7,7 +7,7 @@ $(function(){
 	$('#bt_automate').click(function(){
 		
 		// Conta as abas e as classifica
-		chrome.extension.getBackgroundPage().countTabs();
+		chrome.runtime.sendMessage({callFunction: "countTabs"});
 		
 		// Exibe os botões de itens de acordo com o resultado obtido pela função countTabs
         setTimeout(function(){
@@ -103,32 +103,28 @@ $(function(){
 
 /* BOTÕES DA ABA AUTOMATIZAR (POPUP) */
 
-	$('#bt_editar_modelos').click(function(){
+	function openPage(page) {
 		// Fecha o popup.Html (serve para manter apenas uma aba aberta com uma pagina da extensão)
 		setTimeout(function(){
 			window.close();
 		}, 100);
-        chrome.extension.getBackgroundPage().countTabs();
-		window.open('models/editModels.html');
-	});
+        chrome.runtime.sendMessage({callFunction: "countTabs"});
+		switch (page) {
+			case "modelos":
+				window.open('models/editModels.html');
+				break;
+			case "respostas":
+				window.open('answers/editAnswers.html');
+				break;
+			case "itens":
+				window.open('items/editItems.html');
+				break;
+		}
+	}
 
-	$('#bt_editar_respostas').click(function(){
-		// Fecha o popup.Html (serve para manter apenas uma aba aberta com uma pagina da extensão)
-		setTimeout(function(){
-			window.close();
-		}, 100);
-        chrome.extension.getBackgroundPage().countTabs();
-		window.open('answers/editAnswers.html');
-	});
-
-	$('#bt_editar_itens').click(function(){
-		// Fecha o popup.Html (serve para manter apenas uma aba aberta com uma pagina da extensão)
-		setTimeout(function(){
-			window.close();
-		}, 100);
-        chrome.extension.getBackgroundPage().countTabs();
-		window.open('items/editItems.html');
-	});
+	$('#bt_editar_modelos').click(function(){openPage("modelos")});
+	$('#bt_editar_respostas').click(function(){openPage("respostas")});
+	$('#bt_editar_itens').click(function(){openPage("itens")});
 
 /* ====================================== */
 
@@ -137,15 +133,19 @@ $(function(){
 /* FUNÇÕES PARA FECHAR AS ABAS ABERTAS */
 
 	$('#close_model').click(function(){
-		chrome.extension.getBackgroundPage().closeTabModel();
+		if(confirm("Deseja fechar todas as abas de MODELOS?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabModel"})
+		}
 	});
-
 	$('#close_item').click(function(){
-		chrome.extension.getBackgroundPage().closeTabItem();
+		if(confirm("Deseja fechar todas as abas de ITENS?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabItem"})
+		}
 	});
-
 	$('#close_answer').click(function(){
-		chrome.extension.getBackgroundPage().closeTabAnswer();
+		if(confirm("Deseja fechar todas as abas de RESPOSTAS?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabAnswer"})
+		}
 	});
 
 /* ====================================== */

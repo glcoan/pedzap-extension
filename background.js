@@ -1,33 +1,32 @@
-const urlEstabelecimento = "estabelecimento/";
-const urlCategorias = "estabelecimento/categorias";
-const urlModelos = "estabelecimento/modelos";
+export const urlEstabelecimento = "estabelecimento/";
+export const urlCategorias = "estabelecimento/categorias";
+export const urlModelos = "estabelecimento/modelos";
 
-const urlInserirModelos = "estabelecimento/modelos/inserir";
-const urlInserirCategorias = "estabelecimento/categorias/inserir";
+export const urlInserirModelos = "estabelecimento/modelos/inserir";
+export const urlInserirCategorias = "estabelecimento/categorias/inserir";
 
-const urlEditarGrupos = "estabelecimento/cardapios_grupos/editar";
-const urlEditarItens = "estabelecimento/itens/editar";
-const urlEditarCategorias = "estabelecimento/categorias/editar";
-const urlEditarModelos = "estabelecimento/modelos/editar";
-const urlEditarTemplates = "estabelecimento/templates/editar";
-const urlEditarPerguntas = "estabelecimento/perguntas/editar";
-const urlEditarRespostas = "estabelecimento/respostas/editar";
+export const urlEditarGrupos = "estabelecimento/cardapios_grupos/editar";
+export const urlEditarItens = "estabelecimento/itens/editar";
+export const urlEditarCategorias = "estabelecimento/categorias/editar";
+export const urlEditarModelos = "estabelecimento/modelos/editar";
+export const urlEditarTemplates = "estabelecimento/templates/editar";
+export const urlEditarPerguntas = "estabelecimento/perguntas/editar";
+export const urlEditarRespostas = "estabelecimento/respostas/editar";
 
-const urlEditarPedidos = "estabelecimento/pedidos/editar";
-const urlWebapp = "webapp/globais/home";
+export const urlEditarPedidos = "estabelecimento/pedidos/editar";
+export const urlWebapp = "webapp/globais/home";
 
-const urlEstab = "/estabelecimento";
-const urlAdmin = "/administrador";
+export const urlEstab = "/estabelecimento";
+export const urlAdmin = "/administrador";
 
-import "./backgrounds/backgroundAutoCardapio.js";
-import "./backgrounds/backgroundItems.js";
-import "./backgrounds/backgroundModels.js";
-import "./backgrounds/backgroundAnswers.js";
-import "./backgrounds/backgroundCloseTabs.js";
-import "./backgrounds/backgroundCustomWebapp.js";
+import {} from "./backgrounds/Answers.js";
+import {} from "./backgrounds/AutoCardapio.js";
+import {} from "./backgrounds/backgroundItems.js";
+import {} from "./backgrounds/backgroundModels.js";
+import {} from "./backgrounds/CustomWebapp.js";
+import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
-
-/* ============= Tema padrão ============ 
+/* ============= TEMA PADRÃO ============ 
 
 function temaPadrao() {
 	chrome.storage.local.get('temaPadrao', function(data){
@@ -46,8 +45,8 @@ temaPadrao();
 
 /* ALERTA DE ATUALIZAÇÃO 
 
-chrome.storage.local.get('v2_2_0', function(data){
-	if(!data.v2_2_0){
+chrome.storage.local.get('v3_0_0', function(data){
+	if(!data.v3_0_0){
 		chrome.storage.local.clear();
 		var msg = 'Nova versão disponível! (⌒‿⌒)\n>------------{ v0.0.0 }------------<\n';
 		chrome.storage.local.set({'atualizacao': msg});
@@ -76,46 +75,25 @@ setTimeout(function(){
 
 
 
-/* CONTA E CLASSIFICA AS ABAS */
+/* DEFINE FUNÇÕES PARA SEREM USADAS QUANDO CHEGAR UMA MENSAGEM NO ONMESSAGE */
 
-function countTabs(){
-	chrome.storage.local.remove('item_tabs');
-	chrome.storage.local.remove('model_tabs');
-	chrome.storage.local.remove('answer_tabs');
-	chrome.storage.local.remove('other_tabs');
-	chrome.tabs.query({}, function(tabs){
-		arrayId = [];
-		itensArray = [];
-		modelosArray = [];
-		respostasArray = [];
-		outrasArray = [];
-		tabs.forEach(function(tab){
-			let id = tab.id;
-			arrayId.push(id);
-			if(tab.url.includes(urlEditarItens)){
-				itensArray.push(tab.url);
-			}
-			else if(tab.url.includes(urlEditarModelos)){
-				modelosArray.push(tab.url);
-			}
-			else if(tab.url.includes(urlEditarRespostas)){
-				respostasArray.push(tab.url);
-			}
-			else{
-				outrasArray.push(tab.url);
-			}
-		});
 
-		let itensQtde = itensArray.length;
-		let modelosQtde = modelosArray.length;
-		let respostasQtde = respostasArray.length;
-		let outrasQtde = outrasArray.length;
 
-		chrome.storage.local.set({'item_tabs': itensQtde});
-		chrome.storage.local.set({'model_tabs': modelosQtde});
-		chrome.storage.local.set({'answer_tabs': respostasQtde});
-		chrome.storage.local.set({'other_tabs': outrasQtde});
-	});
+const functions = {
+
+	/* CONTA E CLASSIFICA AS ABAS */
+	countTabs(){
+		countTabs();
+	},
+	closeTabItem(){
+		closeTabItem();
+	},
+	closeTabModel(){
+		closeTabModel();
+	},
+	closeTabAnswer(){
+		closeTabAnswer();
+	},
 }
 
 /* ====================================== */
@@ -131,6 +109,10 @@ let respostas = [];
 let itens = [];
 
 chrome.runtime.onMessage.addListener(function(request){
+	if(request.callFunction){
+		functions[request.callFunction]();
+		return true;
+	}
 	if(request.mensagem){
 		window.open (
 			'helpers/qrcode-generator.html',
@@ -256,7 +238,7 @@ chrome.runtime.onMessage.addListener(function(request){
 
 
 
-/* PREPARAR PEDIDOS AUTOMATICAMENTE */
+/* PREPARAR PEDIDOS AUTOMATICAMENTE
 
 function autoPrepare(){
 	chrome.tabs.query({}, function(tabs){
@@ -272,3 +254,4 @@ function autoPrepare(){
 		});
 	});
 }
+*/
