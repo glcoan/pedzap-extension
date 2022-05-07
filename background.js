@@ -22,9 +22,11 @@ export const urlAdmin = "/administrador";
 import {} from "./backgrounds/Answers.js";
 import {} from "./backgrounds/AutoCardapio.js";
 import {} from "./backgrounds/backgroundItems.js";
-import { editModels, refreshModels, addPriceModels, removePriceModels, sendModels, saveModels} from "./backgrounds/backgroundModels.js";
+import { editModels, refreshModel, addPriceModel, removePriceModel, saveModel} from "./backgrounds/backgroundModels";
+import { sendModel } from "./models/handleModel.js";
 import {} from "./backgrounds/CustomWebapp.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
+
 
 /* ============= TEMA PADRÃO ============ 
 
@@ -240,30 +242,26 @@ chrome.runtime.onMessage.addListener(function(request){
 		
 	}
 	if(request.model){
-		var model = request.model.id.split('_');
+		let model = request.model.id.split('_');
 
-		var tab_id = parseInt(model[model.length - 1]);
-		var propertie = model[1];
-		var value = request.model.value;
+		let tab_id = parseInt(model[model.length - 1]);
+		let propertie = model[1];
+		let value = request.model.value;
 
 		if(propertie == "price" || propertie == "maximum"){
-
-			var priceIndex = model[2];
-			var code = 
-				'var propertie  = "' +propertie+  '"; '+
-				'var value      = "' +value+      '"; '+
-				'var priceIndex = "' +priceIndex+ '"; '
-
+			let priceIndex = model[2];
+			chrome.scripting.executeScript({
+				target: {tabId: tab_id},
+				func: sendModel,
+				args: [propertie, value, priceIndex]
+			});
 		}else{
-			var code = 'var propertie = "'+propertie+'"; var value = "'+value+'"';
+			chrome.scripting.executeScript({
+				target: {tabId: tab_id},
+				func: sendModel,
+				args: [propertie, value]
+			});
 		}
-
-		chrome.tabs.executeScript(tab_id, {
-			code: code
-		}, function(){
-			chrome.tabs.executeScript(tab_id, {file: 'models/bg/backgroundSendModel.js'});
-		})
-
 	}
 	return true;
 });

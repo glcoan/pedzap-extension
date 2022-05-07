@@ -371,83 +371,6 @@ $(function(){
 
 
 
-/* FUNÇÃO PARA ENVIAR AS ALTERAÇÕES NOS MODELOS PARA AS ABAS */
-
-	/*
-	var newModel = [];
-	$('#send_models').click(function(){
-
-		// Desabilida os botões de enviar e salvar pros abestado não fazer cagada (Para garantir que quando forem habilitados novamente, as informações tenham sido enviadas)
-		$('.btn').addClass('disabled');
-
-		newModel = [];
-		chrome.storage.local.get('modelos', function(data){
-			var modelos = data.modelos;
-
-			// Coleta todas as informações da lista (tabela)
-			if(modelos){
-				modelos.forEach(function(modelo){
-					var addModel = {
-						tab_id: modelo.tab_id,
-						sku: document.getElementById('mod_sku_'+modelo.tab_id).value,
-						status: document.getElementById('mod_status_'+modelo.tab_id).value,
-						title: document.getElementById('mod_title_'+modelo.tab_id).value,
-						description: document.getElementById('mod_description_'+modelo.tab_id).value,
-						prices: [],
-						maximum: []
-					}
-
-					for(i = 0; i < modelo.prices.length; i++){
-						var price = document.getElementById('mod_price_'+i+'_'+modelo.tab_id).value;
-						var max = document.getElementById('mod_maximum_'+i+'_'+modelo.tab_id).value;
-						addModel.prices.push(price);
-						addModel.maximum.push(max);
-					}
-					console.log(addModel);
-
-					newModel.push(addModel);
-				});
-			}else{
-				console.log(modelos);
-			}
-
-			// Seta o novo array "modelos", com as informações do array antigo alteradas pelo usuário
-			console.log(newModel);
-			chrome.storage.local.set({'modelos': newModel});
-
-			// Conta as abas denovo pra poder comparar na hora de enviar
-			chrome.extension.getBackgroundPage().countTabs();
-		});
-
-		// Envia as informações do novo array para as abas
-		setTimeout(function(){
-			chrome.storage.local.get('model_tabs', function(tabs){
-				chrome.storage.local.get('modelos', function(data){
-					console.log('Quantidade de Abas: ' + tabs.model_tabs);
-					console.log('Quantidade de Modelos: ' + data.modelos.length);
-	                if(tabs.model_tabs == data.modelos.length){
-	                	console.log('Quantidade válida');
-						chrome.extension.getBackgroundPage().sendModels();
-
-						// Habilita novamente os botões
-						setTimeout(function(){
-							alert("Alterações enviadas com sucesso! *(Ainda precisam ser salvas!)*\n- Finalizado em " + (tabs.model_tabs * 100)/1000 + " segundos");
-							window.location.reload();
-						}, tabs.model_tabs * 100);
-	                }else{
-	                	alert('A quantidade de abas abertas para editar os modelos não é igual a quantidade da lista!');
-						$('.btn').removeClass('disabled');
-	                }
-            	});
-            });
-		}, 1000);
-	});
-	*/
-
-/* ====================================== */
-
-
-
 /* FUNÇÃO PARA SALVAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
 	$('#save_models').click(function(){
@@ -466,8 +389,10 @@ $(function(){
 
 /* FUNÇÃO PARA FECHAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
-	$('#close_model').click(function(){
-		chrome.runtime.sendMessage({callFunction: "closeTabModel"});
+	$('#close_models').click(function(){
+		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os modelos?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabModel"});
+		}
 	});
 
 /* ====================================== */
