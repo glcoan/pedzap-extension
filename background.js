@@ -36,6 +36,7 @@ import {} from "./backgrounds/CustomWebapp.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
 
+
 /* ============= TEMA PADRÃO ============ 
 
 function temaPadrao() {

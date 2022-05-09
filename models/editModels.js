@@ -228,7 +228,10 @@ $(function(){
 						$("#btn-add-preco-all").click(function(){
 							if(confirm("Deseja mesmo adicionar um novo campo de preço para todos os modelos?")){
 								chrome.runtime.sendMessage({callFunction: "addPriceModels"});
-								$('#send_models').click();
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 2000);
 							}
 						});
 
@@ -237,7 +240,10 @@ $(function(){
 						$("#btn-remove-preco-all").click(function(){
 							if(confirm("Deseja mesmo remover o último preço de todos os modelos?")){
 								chrome.runtime.sendMessage({callFunction: "removePriceModels"});
-								$('#send_models').click();
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 2000);
 							}
 						});
 					});
@@ -287,7 +293,7 @@ $(function(){
 						$("#tbody").append('<tr id="'+modelo.tab_id+'"><td id="pro_ref_'+modelo.tab_id+'" class="text-center"><button id="btn-ref-model-'+modelo.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td><td id="pro_status_'+modelo.tab_id+'"><select id="mod_status_'+modelo.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select></td><td id="pro_sku_'+modelo.tab_id+'"><input id="mod_sku_'+modelo.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+modelo.sku+'"></td><td id="pro_title_'+modelo.tab_id+'"><input id="mod_title_'+modelo.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+modelo.title+'"></td><td id="pro_description_'+modelo.tab_id+'"><textarea id="mod_description_'+modelo.tab_id+'" class="form-control form-control-sm descricao" type="text" rows="1">'+modelo.description+'</textarea></td>');
 
 						$('#btn-ref-model-'+modelo.tab_id).click(function(){
-							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
+							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
 								chrome.runtime.sendMessage({callFunction: "refreshModels_"+modelo.tab_id});
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
@@ -320,25 +326,21 @@ $(function(){
 							// Botão para adicionar preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_add_'+modelo.tab_id+'" class="text-center"><button id="btn-add-preco-'+modelo.tab_id+'" class="btn btn-success btn-sm rounded-1"><i class="fas fa-plus"></i></button></td>');
 							$('#btn-add-preco-'+modelo.tab_id).click(function(){
-								if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo adicionar um novo campo de preço para o modelo "'+modelo.title+'"?')){
-									chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id});
-									$('.btn').addClass('disabled');
-									setTimeout(function(){
-										window.location.reload();
-									}, 500);
-								}
+								chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 500);
 							});
 
 							// Botão para remover preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_remove_'+modelo.tab_id+'" class="text-center"><button id="btn-remove-preco-'+modelo.tab_id+'" class="btn btn-danger btn-sm rounded-1"><i class="fas fa-minus"></i></button></td>');
 							$('#btn-remove-preco-'+modelo.tab_id).click(function(){
-								if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo remover o último campo de preço do modelo "'+modelo.title+'"?')){
-									chrome.runtime.sendMessage({callFunction: "removePriceModels_"+modelo.tab_id});
-									$('.btn').addClass('disabled');
-									setTimeout(function(){
-										window.location.reload();
-									}, 500);
-								}
+								chrome.runtime.sendMessage({callFunction: "removePriceModels_"+modelo.tab_id});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 500);
 							});
 						});
 
