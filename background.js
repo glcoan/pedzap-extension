@@ -22,8 +22,16 @@ export const urlAdmin = "/administrador";
 import {} from "./backgrounds/Answers.js";
 import {} from "./backgrounds/AutoCardapio.js";
 import {} from "./backgrounds/backgroundItems.js";
-import { editModels, refreshModel, addPriceModel, removePriceModel, saveModel} from "./backgrounds/backgroundModels";
-import { sendModel } from "./models/handleModel.js";
+
+import {
+	sendModel,
+	editModels,
+	refreshModels,
+	addPriceModels,
+	removePriceModels,
+	saveModels
+} from "./backgrounds/backgroundModels.js";
+
 import {} from "./backgrounds/CustomWebapp.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
@@ -167,11 +175,6 @@ chrome.runtime.onMessage.addListener(function(request){
 				}
 				modelos.push(newModel);
 				
-				console.log('Quantidade de abas: ' + qtde);
-				console.log('Modelo adicionado: ' + newModel.title);
-				console.log('Nova quantia no array: ' + modelos.length);
-				//console.log(newModel.tab_id + ' - ' + newModel.status + ' - ' + newModel.sku + ' - ' + newModel.title);
-				
 				if(modelos.length == qtde){
 					chrome.storage.local.set({'modelos': modelos});
 					chrome.storage.local.set({'max_pre': max_pre});
@@ -195,10 +198,6 @@ chrome.runtime.onMessage.addListener(function(request){
 				var newAnswer = request.newAnswer;
 				respostas.push(newAnswer);
 	
-				console.log('Resposta adicionada: ' + newAnswer.title);
-				console.log('Nova quantia no array: ' + respostas.length);
-				//console.log(newAnswer.tab_id + ' - ' + newAnswer.status + ' - ' + newAnswer.sku + ' - ' + newAnswer.title);
-				
 				if(respostas.length == qtde){
 					chrome.storage.local.set({'respostas': respostas});
 					
@@ -222,11 +221,7 @@ chrome.runtime.onMessage.addListener(function(request){
 					max_tit = newItem.t_titles.length;
 				}
 				itens.push(newItem);
-	
-				console.log('Item adicionado: ' + newItem.title);
-				console.log('Preços: ' + newItem.t_prices);
-				console.log('Nova quantia no array: ' + itens.length);
-				
+
 				if(itens.length == qtde){
 					chrome.storage.local.set({'itens': itens});
 					chrome.storage.local.set({'max_tit': max_tit});
