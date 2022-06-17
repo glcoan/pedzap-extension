@@ -22,65 +22,44 @@ export const urlAdmin = "/administrador";
 import {} from "./backgrounds/Answers.js";
 import {} from "./backgrounds/AutoCardapio.js";
 import {} from "./backgrounds/backgroundItems.js";
-
-import {
-	sendModel,
-	editModels,
-	refreshModels,
-	addPriceModels,
-	removePriceModels,
-	saveModels
-} from "./backgrounds/backgroundModels.js";
-
 import {} from "./backgrounds/CustomWebapp.js";
+import { sendModel, editModels, refreshModels, addPriceModels, removePriceModels, saveModels } from "./backgrounds/backgroundModels.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
+/* ALERTA DE ATUALIZAÇÃO */
 
-
-/* ============= TEMA PADRÃO ============ 
-
-function temaPadrao() {
-	chrome.storage.local.get('temaPadrao', function(data){
-		if(!data.temaPadrao){
-			window.tema_padrao = 'light';
-		}else{
-			window.tema_padrao = data.temaPadrao;
-		}
-	});
-}
-temaPadrao();
-
-/* ====================================== */
-
-
-
-/* ALERTA DE ATUALIZAÇÃO 
-
-chrome.storage.local.get('v3_0_0', function(data){
-	if(!data.v3_0_0){
+let theme;
+chrome.storage.local.get('v2_0_0', (data)=>{
+	if(!data.v2_0_0){
+		chrome.storage.local.get('theme', (data)=>{
+			theme = data.theme;
+		});
 		chrome.storage.local.clear();
 		var msg = 'Nova versão disponível! (⌒‿⌒)\n>------------{ v0.0.0 }------------<\n';
 		chrome.storage.local.set({'atualizacao': msg});
 	}
 });
 
-setTimeout(function(){
-	chrome.storage.local.get('atualizacao', function(data){
+setTimeout(()=>{
+	chrome.storage.local.get('atualizacao', (data)=>{
 		if(data.atualizacao){
-			window.open("changelog.html");
+			chrome.tabs.create({
+				url: 'changelog.html'
+			});
 
 			// Limpa o storage
 			chrome.storage.local.clear();
 
 			// Define a váriavel de tema padrão
-			chrome.storage.local.set({'temaPadrao': window.tema_padrao});
-			chrome.storage.local.set({'tema': window.tema_padrao});
+			chrome.storage.local.set({'theme': theme});
 			
 			// Define a váriavel de versão para não aparecer o alerta denovo
-			chrome.storage.local.set({'v2_2_0': 'Mensagem de atualizacao já recebida!'});
+			chrome.storage.local.set({'v2_0_0': 'Mensagem de atualizacao já recebida!'});
+		}else{
+			console.log("Sem atualizacao");
 		}
 	});
-}, 5000);
+}, 2000);
 
 /* ====================================== */
 
@@ -153,6 +132,15 @@ let respostas = [];
 let itens = [];
 
 chrome.runtime.onMessage.addListener(function(request){
+	if(request.refreshExtensionTabs){
+		chrome.tabs.query({}, (tabs)=>{
+			tabs.forEach((tab)=>{
+				if(tab.url.includes("editModels") || tab.url.includes("editItems") || tab.url.includes("editAnswers")){
+					chrome.tabs.reload(tab.id);
+				}
+			});
+		});
+	}
 	if(request.callFunction){
 		let message = request.callFunction.split("_");
 		message.length == 1 ? functions[message[0]]() : functions[message[0]](message[1]);

@@ -27,9 +27,22 @@ const editGroup = window.location.pathname.includes('/cardapios_grupos/editar');
 const ordering = window.location.pathname.includes('/ordenacao');
 const register = window.location.pathname.includes('/completar/');
 
+function injectCode(src) {
+	const script = document.createElement('script');
+    // This is why it works!
+    script.src = src;
+    script.onload = function() {
+        this.remove();
+    };
+	const interval = setInterval(() => {
+		if(document.head){
+			document.head.insertAdjacentElement("beforeend", script);
+			clearInterval(interval);
+		}
+	}, 1);
+}
+
 var verifyEditConfigs = setInterval(() => {
-	console.log('intervalo');
-	console.log(editConfigs);
 	if(editConfigs != undefined){
 		clearInterval(verifyEditConfigs);
 		if(editConfigs == true){
@@ -69,7 +82,8 @@ var verifyEditConfigs = setInterval(() => {
 	}
 }, 100);
 
-if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !insertGroup && !editTemplate && !editCategory && !editGroup) && (listGroups || listCategories || listTemplates || listItems || listModels || listQuestions || listAnswers || listOrders || listClients)){
+if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !insertGroup && !editTemplate && !editCategory && !editGroup)
+&& (listGroups || listCategories || listTemplates || listItems || listModels || listQuestions || listAnswers || listOrders || listClients)){
 	
 	document.querySelector("#datatable_ajax_length > label > select").selectedIndex = 7;
 	document.querySelector("#datatable_ajax_length > label > select").dispatchEvent(new Event('change'));
@@ -95,16 +109,6 @@ if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !inser
 		}
 		if(edit_all.length != 0 && estButttons){
 			clearInterval(interval1);
-
-			if(document.getElementById('startIntro')){
-				document.getElementById('startIntro').style.display = "none";
-			}
-			if(document.getElementById('estChatBotao')){
-				document.getElementById('estChatBotao').style.display = "none";
-			}
-			if(document.getElementsByClassName('btn btn-circle red-thunderbird tooltips')[1]){
-				document.getElementsByClassName('btn btn-circle red-thunderbird tooltips')[1].style.display = "none";
-			}
 
 			if(document.querySelector("#ext-open-link-quest")){
 				document.querySelector("#ext-open-link-edit").remove();
@@ -168,88 +172,24 @@ if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !inser
 		setTimeout(function(){
 			getLinks();
 		}, 1000);
-	});
-	
-	/*if (listItems || listModels || listAnswers) {
-		document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<a class="btn purple" style="display: block;" id="bt_status_all"><i class="fa fa-check-circle"></i></a>');
-		document.querySelector("#bt_status_all").addEventListener("click", ()=>{
-			document.querySelectorAll("a[href*='set_status']").forEach((btn)=>{
-				btn.click();
-			});
-		});
-	}*/
-
-	// BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
-	if (listItems || listModels || listAnswers) {
-		var btn_status_1 = '<a class="btn green-jungle btn-icon-only" id="btn_status_1"><i class="fa fa-check-circle"></i></a>';
-		var btn_status_2 = '<a class="btn blue btn-icon-only" id="btn_status_2"><i class="fa fa-check-circle"></i></a>';
-		var btn_status_3 = '<a class="btn grey-steel btn-icon-only" id="btn_status_3"><i class="fa fa-check-circle"></i></a>';
-		var btn_status_4 = '<a class="btn red-thunderbird btn-icon-only" id="btn_status_4"><i class="fa fa-check-circle"></i></a>';
-
-		if(listModels){
-			document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<div style="width: 112px; margin-left: -8px;">'+btn_status_1+btn_status_2+btn_status_3+'</div>');
-		}else{
-			document.querySelector("#datatable_ajax > thead > tr > th:last-child").insertAdjacentHTML("afterbegin", '<div style="width: 151px; margin-left: -8px;">'+btn_status_1+btn_status_2+btn_status_3+btn_status_4+'</div>');
-		}
-		function changeStatus(status){
-			var allButtonsDone = true;
-			var interval = setInterval(()=>{
-				document.querySelectorAll("a[href*='set_status']").forEach((btn)=>{
-					if(btn.classList.contains(status) == false){
-						btn.click();
-						allButtonsDone = false;
-					}
-				});
-				if(allButtonsDone == true){
-					clearInterval(interval);					
-				}else{
-					allButtonsDone = true;
-				}
-			}, 1000);
-		}
-		
-		document.querySelector("#btn_status_1").addEventListener("click", ()=>{
-			var ativo = "green-jungle";
-			if(confirm("Confirme para definir todos como ATIVOS:")){
-				changeStatus(ativo);
-			}
-		});
-
-		document.querySelector("#btn_status_2").addEventListener("click", ()=>{
-			var suspenso = "blue";
-			if(confirm("Confirme para definir todos como SUSPENSOS:")){
-				changeStatus(suspenso);
-			}
-		});
-
-		document.querySelector("#btn_status_3").addEventListener("click", ()=>{
-			var desativado = "grey-steel";
-			if(confirm("Confirme para definir todos como DESATIVADOS:")){
-				changeStatus(desativado);
-			}
-		});
-
-		if(listItems){
-			document.querySelector("#btn_status_4").addEventListener("click", ()=>{
-				var bloqueado = "red-thunderbird";
-				if(confirm("Confirme para definir todos como BLOQUEADOS:")){
-					changeStatus(bloqueado);
-				}
-			});
-		}
-		if(listAnswers){
-			document.querySelector("#btn_status_4").classList.add("disabled");
-		}
-
-	}
-	// FIM DO SCRIPT DOS BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
-
+	});	
 }
 
-if(insertBot){
-	document.querySelector("#bot_status").selectedIndex = 3;
-	document.querySelector("#bot_status").dispatchEvent(new Event('change'));
+if(document.getElementById('startIntro')){
+	document.getElementById('startIntro').style.display = "none";
 }
+if(document.getElementById('estChatBotao')){
+	document.getElementById('estChatBotao').style.display = "none";
+}
+if(document.getElementsByClassName('btn btn-circle red-thunderbird tooltips')[1]){
+	document.getElementsByClassName('btn btn-circle red-thunderbird tooltips')[1].style.display = "none";
+}
+
+// BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
+if (listItems || listModels || listAnswers) {
+	injectCode(chrome.runtime.getURL('helpers/changeStatus.js'));
+}
+// FIM DO SCRIPT DOS BOTÕES PARA MUDAR TODOS OS STATUS DAS OPÇÕES DAS LISTAS
 
 if(register){
 	// PAGAMENTOS

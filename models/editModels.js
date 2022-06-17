@@ -210,7 +210,7 @@ $(function(){
 							$('.btn').addClass('disabled');
 					
 							setTimeout(function(){
-								$('.btn').removeClass('disabled');
+								window.location.reload();
 							}, 3000)
 						}
 					});

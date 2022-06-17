@@ -10,28 +10,21 @@ $('#btnSalvarConfig').click(function() {
         document.getElementById('alertSave').classList.add('alertSaveHide');
     }, 5000);
 
-
     // Tema padrão
     if($('#tema-claro').is(":checked")){
-        chrome.storage.local.set({'temaPadrao': "light"});
+        chrome.storage.local.set({'theme': "light"});
     }
     if($('#tema-escuro').is(":checked")){
-        chrome.storage.local.set({'temaPadrao': "dark"});
+        chrome.storage.local.set({'theme': "dark"});
     }
-
 })
 
-
-
-// Seleciona a opção referente ao tema padrão salvo
-chrome.storage.local.get('temaPadrao', function(data){
-    
-    if(data.temaPadrao === "light"){
-
+// Seleciona a opção referente ao tema salvo
+chrome.storage.local.get('theme', function(data){
+    if(data.theme === "light"){
         $('#tema-claro').prop('checked', true);
     }
-    if(data.temaPadrao === "dark"){
-
+    if(data.theme === "dark"){
         $('#tema-escuro').prop('checked', true);
     }
 });

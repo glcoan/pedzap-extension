@@ -50,6 +50,15 @@
 		}
 	],
 
+	"web_accessible_resources": [
+		{
+			"resources": [ "helpers/changeStatus.js" ],
+			"matches": [
+				"https://www.pedzap.com.br/*"
+			]
+		}
+	],
+
 	"background": {
 		"service_worker": "background.js",
 		"type": "module"
@@ -67,4 +76,5 @@
 	"host_permissions": [
 		"<all_urls>"
 	]
+
 }

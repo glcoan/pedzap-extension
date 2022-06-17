@@ -66,6 +66,7 @@ export function editModels(){
 						});
 
 						chrome.runtime.sendMessage({newModel: newModel});
+						document.querySelector("#form").onchange = () => {chrome.runtime.sendMessage({refreshExtensionTabs: true}); console.log("Chamou a funcao!");}
 					},
 					args: [id]
 				});
