@@ -1,4 +1,4 @@
-function editItems(){
+export function editItems(){
 	chrome.storage.local.remove('itens');
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
@@ -17,7 +17,7 @@ function editItems(){
 	});
 }
 
-function sendItems(){
+export function sendItems(){
 	chrome.storage.local.get('itens', function(data){
 		var itens = data.itens;
 		if(itens){
@@ -38,7 +38,7 @@ function sendItems(){
 	});
 }
 
-function saveItems(){
+export function saveItems(){
 	chrome.storage.local.get('itens', function(data){
 		var itens = data.itens;
 		if(itens){
@@ -52,7 +52,7 @@ function saveItems(){
 	});
 }
 
-function refreshItems(identificador){
+export function refreshItems(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador == 'all_uni'){
 			tabs.forEach(function(tab){
@@ -90,7 +90,7 @@ function refreshItems(identificador){
 	});
 }
 
-function addPriceItems(identificador){
+export function addPriceItems(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador){
 			tabs.forEach(function(tab){
@@ -111,7 +111,7 @@ function addPriceItems(identificador){
 	});
 }
 
-function removePriceItems(identificador){
+export function removePriceItems(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador){
 			tabs.forEach(function(tab){

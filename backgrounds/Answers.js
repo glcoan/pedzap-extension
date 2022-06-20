@@ -1,4 +1,4 @@
-function editAnswers(){
+export function editAnswers(){
 	chrome.storage.local.remove('respostas');
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
@@ -17,7 +17,7 @@ function editAnswers(){
 	});
 }
 
-function refreshAnswers(identificador){
+export function refreshAnswers(identificador){
 	chrome.tabs.query({}, function(tabs){
 		if(identificador == 'all_ind'){
 			tabs.forEach(function(tab){
@@ -55,7 +55,7 @@ function refreshAnswers(identificador){
 	});
 }
 
-function sendAnswers(){
+export function sendAnswers(){
 	chrome.storage.local.get('respostas', function(data){
 		var respostas = data.respostas;
 		if(respostas){
@@ -73,7 +73,7 @@ function sendAnswers(){
 	});
 }
 
-function saveAnswers(){
+export function saveAnswers(){
 	chrome.storage.local.get('respostas', function(data){
 		var respostas = data.respostas;
 		if(respostas){

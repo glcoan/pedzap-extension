@@ -50,7 +50,7 @@ $(function(){
 
 	// Quando o dom carrega essa função é chamada para listar os modelos
 	$(document).ready(function(){
-		chrome.extension.getBackgroundPage().countTabs();
+		chrome.runtime.sendMessage({callFunction: "countTabs"});
 		listModels();
 	});
 
@@ -109,7 +109,7 @@ $(function(){
 				modelos = JSON.stringify(modelos);
 				console.log("Array-1 = "+modelos);
 				array1.push(modelos);
-				chrome.extension.getBackgroundPage().editModels();
+				chrome.runtime.sendMessage({callFunction: "editModels"});
 			}
 		});
 
@@ -158,11 +158,9 @@ $(function(){
 /* FUNÇÃO PARA LISTAR TODOS OS MODELOS */
 
 	function listModels(){
-		// Conta as abas novamente por prevenção
-		chrome.extension.getBackgroundPage().countTabs();
 
 		// Coleta todas as informações dos modelos abertos e armazena no storage
-		chrome.extension.getBackgroundPage().editModels();
+		chrome.runtime.sendMessage({callFunction: "editModels"});
 
 		// Exibe o spinner enquanto o setTimeout abaixo não é executado
 		$("body").css({'overflow-y': 'hidden'});
@@ -207,12 +205,12 @@ $(function(){
 					// botão para atualizar página do modelo
 					$('#refresh_models').click(function(){
 						if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar Modelos"?')){
-							chrome.extension.getBackgroundPage().refreshModels();
+							chrome.runtime.sendMessage({callFunction: "refreshModels"});
 					
 							$('.btn').addClass('disabled');
 					
 							setTimeout(function(){
-								$('.btn').removeClass('disabled');
+								window.location.reload();
 							}, 3000)
 						}
 					});
@@ -229,8 +227,11 @@ $(function(){
 						$("#tr_head").append('<th scope="col" class="novo-preco prop-modelo-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success rounded-1"><i class="fas fa-plus"></i></a></th>');
 						$("#btn-add-preco-all").click(function(){
 							if(confirm("Deseja mesmo adicionar um novo campo de preço para todos os modelos?")){
-								chrome.extension.getBackgroundPage().addPriceModels();
-								$('#send_models').click();
+								chrome.runtime.sendMessage({callFunction: "addPriceModels"});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 2000);
 							}
 						});
 
@@ -238,8 +239,11 @@ $(function(){
 						$("#tr_head").append('<th scope="col" class="exclui-preco prop-modelo-ext"><a href="#" id="btn-remove-preco-all" class="btn btn-danger rounded-1"><i class="fas fa-minus"></i></a></th></tr>');
 						$("#btn-remove-preco-all").click(function(){
 							if(confirm("Deseja mesmo remover o último preço de todos os modelos?")){
-								chrome.extension.getBackgroundPage().removePriceModels();
-								$('#send_models').click();
+								chrome.runtime.sendMessage({callFunction: "removePriceModels"});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 2000);
 							}
 						});
 					});
@@ -289,8 +293,8 @@ $(function(){
 						$("#tbody").append('<tr id="'+modelo.tab_id+'"><td id="pro_ref_'+modelo.tab_id+'" class="text-center"><button id="btn-ref-model-'+modelo.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td><td id="pro_status_'+modelo.tab_id+'"><select id="mod_status_'+modelo.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select></td><td id="pro_sku_'+modelo.tab_id+'"><input id="mod_sku_'+modelo.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+modelo.sku+'"></td><td id="pro_title_'+modelo.tab_id+'"><input id="mod_title_'+modelo.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+modelo.title+'"></td><td id="pro_description_'+modelo.tab_id+'"><textarea id="mod_description_'+modelo.tab_id+'" class="form-control form-control-sm descricao" type="text" rows="1">'+modelo.description+'</textarea></td>');
 
 						$('#btn-ref-model-'+modelo.tab_id).click(function(){
-							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
-								chrome.extension.getBackgroundPage().refreshModels(modelo.tab_id);
+							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
+								chrome.runtime.sendMessage({callFunction: "refreshModels_"+modelo.tab_id});
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -322,25 +326,21 @@ $(function(){
 							// Botão para adicionar preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_add_'+modelo.tab_id+'" class="text-center"><button id="btn-add-preco-'+modelo.tab_id+'" class="btn btn-success btn-sm rounded-1"><i class="fas fa-plus"></i></button></td>');
 							$('#btn-add-preco-'+modelo.tab_id).click(function(){
-								if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo adicionar um novo campo de preço para o modelo "'+modelo.title+'"?')){
-									chrome.extension.getBackgroundPage().addPriceModels(modelo.tab_id);
-									$('.btn').addClass('disabled');
-									setTimeout(function(){
-										window.location.reload();
-									}, 500);
-								}
+								chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 500);
 							});
 
 							// Botão para remover preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_remove_'+modelo.tab_id+'" class="text-center"><button id="btn-remove-preco-'+modelo.tab_id+'" class="btn btn-danger btn-sm rounded-1"><i class="fas fa-minus"></i></button></td>');
 							$('#btn-remove-preco-'+modelo.tab_id).click(function(){
-								if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo remover o último campo de preço do modelo "'+modelo.title+'"?')){
-									chrome.extension.getBackgroundPage().removePriceModels(modelo.tab_id);
-									$('.btn').addClass('disabled');
-									setTimeout(function(){
-										window.location.reload();
-									}, 500);
-								}
+								chrome.runtime.sendMessage({callFunction: "removePriceModels_"+modelo.tab_id});
+								$('.btn').addClass('disabled');
+								setTimeout(function(){
+									window.location.reload();
+								}, 500);
 							});
 						});
 
@@ -373,89 +373,12 @@ $(function(){
 
 
 
-/* FUNÇÃO PARA ENVIAR AS ALTERAÇÕES NOS MODELOS PARA AS ABAS */
-
-	/*
-	var newModel = [];
-	$('#send_models').click(function(){
-
-		// Desabilida os botões de enviar e salvar pros abestado não fazer cagada (Para garantir que quando forem habilitados novamente, as informações tenham sido enviadas)
-		$('.btn').addClass('disabled');
-
-		newModel = [];
-		chrome.storage.local.get('modelos', function(data){
-			var modelos = data.modelos;
-
-			// Coleta todas as informações da lista (tabela)
-			if(modelos){
-				modelos.forEach(function(modelo){
-					var addModel = {
-						tab_id: modelo.tab_id,
-						sku: document.getElementById('mod_sku_'+modelo.tab_id).value,
-						status: document.getElementById('mod_status_'+modelo.tab_id).value,
-						title: document.getElementById('mod_title_'+modelo.tab_id).value,
-						description: document.getElementById('mod_description_'+modelo.tab_id).value,
-						prices: [],
-						maximum: []
-					}
-
-					for(i = 0; i < modelo.prices.length; i++){
-						var price = document.getElementById('mod_price_'+i+'_'+modelo.tab_id).value;
-						var max = document.getElementById('mod_maximum_'+i+'_'+modelo.tab_id).value;
-						addModel.prices.push(price);
-						addModel.maximum.push(max);
-					}
-					console.log(addModel);
-
-					newModel.push(addModel);
-				});
-			}else{
-				console.log(modelos);
-			}
-
-			// Seta o novo array "modelos", com as informações do array antigo alteradas pelo usuário
-			console.log(newModel);
-			chrome.storage.local.set({'modelos': newModel});
-
-			// Conta as abas denovo pra poder comparar na hora de enviar
-			chrome.extension.getBackgroundPage().countTabs();
-		});
-
-		// Envia as informações do novo array para as abas
-		setTimeout(function(){
-			chrome.storage.local.get('model_tabs', function(tabs){
-				chrome.storage.local.get('modelos', function(data){
-					console.log('Quantidade de Abas: ' + tabs.model_tabs);
-					console.log('Quantidade de Modelos: ' + data.modelos.length);
-	                if(tabs.model_tabs == data.modelos.length){
-	                	console.log('Quantidade válida');
-						chrome.extension.getBackgroundPage().sendModels();
-
-						// Habilita novamente os botões
-						setTimeout(function(){
-							alert("Alterações enviadas com sucesso! *(Ainda precisam ser salvas!)*\n- Finalizado em " + (tabs.model_tabs * 100)/1000 + " segundos");
-							window.location.reload();
-						}, tabs.model_tabs * 100);
-	                }else{
-	                	alert('A quantidade de abas abertas para editar os modelos não é igual a quantidade da lista!');
-						$('.btn').removeClass('disabled');
-	                }
-            	});
-            });
-		}, 1000);
-	});
-	*/
-
-/* ====================================== */
-
-
-
 /* FUNÇÃO PARA SALVAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
 	$('#save_models').click(function(){
 		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE SALVAR!*\n\nDeseja mesmo salvar todos os modelos?")){
 			$('.btn').addClass('disabled');
-			chrome.extension.getBackgroundPage().saveModels();
+			chrome.runtime.sendMessage({callFunction: "saveModels"});
 			setTimeout(function(){
 				$('.btn').removeClass('disabled');
 			}, 3000);
@@ -468,8 +391,10 @@ $(function(){
 
 /* FUNÇÃO PARA FECHAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
-	$('#close_model').click(function(){
-		chrome.extension.getBackgroundPage().closeTabModel();
+	$('#close_models').click(function(){
+		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os modelos?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabModel"});
+		}
 	});
 
 /* ====================================== */

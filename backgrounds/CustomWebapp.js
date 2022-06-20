@@ -1,6 +1,6 @@
 /* FUNÇÃO QUE ENVIA ALTERAÇÕES EM TEMPO REAL PARA WEBAPP */
 
-function sendScriptLogo(tamanhoLogo,margemLogo){
+export function sendScriptLogo(tamanhoLogo,margemLogo){
     chrome.tabs.query({}, function(tabs){
         tabs.forEach(function(tab){
             if(tab.url.includes(urlWebapp)){
@@ -15,7 +15,7 @@ function sendScriptLogo(tamanhoLogo,margemLogo){
     });
 }
 
-function sendScriptBarra(edit){
+export function sendScriptBarra(edit){
     chrome.tabs.query({}, function(tabs){
         tabs.forEach(function(tab){
             if(tab.url.includes(urlWebapp)){
@@ -40,7 +40,7 @@ function sendScriptBarra(edit){
     });
 }
 
-function sendScriptStatus(){
+export function sendScriptStatus(){
     chrome.tabs.query({}, function(tabs){
         tabs.forEach(function(tab){
             if(tab.url.includes(urlWebapp)){
@@ -65,8 +65,8 @@ function sendScriptStatus(){
 
 /* FUNÇÃO QUE PEGA URL DO WEBAPP */
 
-var webapps = [];
-function catchWebappWindow(){
+export function catchWebappWindow(){
+    var webapps = [];
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
@@ -87,8 +87,8 @@ function catchWebappWindow(){
     }, 100);
 }
 
-var urls = [];
-function catchWebappOpened(){
+export function catchWebappOpened(){
+    var urls = [];
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let url = tab.url;
@@ -115,7 +115,7 @@ function catchWebappOpened(){
 
 /* FUNÇÃO QUE FECHA WEBAPP ABERTO PELO HELPERS */
 
-function closeWebapp(id){
+export function closeWebapp(id){
     chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			if(tab.id == id){
