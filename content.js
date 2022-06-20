@@ -24,6 +24,10 @@ const editTemplate = window.location.pathname.includes('/templates/editar');
 const editCategory = window.location.pathname.includes('/categorias/editar');
 const editGroup = window.location.pathname.includes('/cardapios_grupos/editar');
 
+const editModel = window.location.pathname.includes('/modelos/editar');
+const editItem = window.location.pathname.includes('/itens/editar');
+const editAnswer = window.location.pathname.includes('/respostas/editar');
+
 const ordering = window.location.pathname.includes('/ordenacao');
 const register = window.location.pathname.includes('/completar/');
 
@@ -82,8 +86,30 @@ var verifyEditConfigs = setInterval(() => {
 	}
 }, 100);
 
-if((!insertQuestion && !ordering && !insertCategory && !insertTemplate && !insertGroup && !editTemplate && !editCategory && !editGroup)
-&& (listGroups || listCategories || listTemplates || listItems || listModels || listQuestions || listAnswers || listOrders || listClients)){
+if(
+	(
+		!insertQuestion &&
+		!ordering &&
+		!insertCategory &&
+		!insertTemplate &&
+		!insertGroup &&
+		!editTemplate &&
+		!editCategory &&
+		!editGroup
+	)
+&& 
+	(
+		listGroups ||
+		listCategories ||
+		listTemplates ||
+		listItems ||
+		listModels ||
+		listQuestions ||
+		listAnswers ||
+		listOrders ||
+		listClients
+	)
+){
 	
 	document.querySelector("#datatable_ajax_length > label > select").selectedIndex = 7;
 	document.querySelector("#datatable_ajax_length > label > select").dispatchEvent(new Event('change'));

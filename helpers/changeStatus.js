@@ -21,10 +21,10 @@ function verifyLoading(status, pedzapButtons, qtde){
 }
 
 function changeStatus(status){
-    document.getElementById("btn_status_1").classList.add("disabled");
-    document.getElementById("btn_status_2").classList.add("disabled");
-    document.getElementById("btn_status_3").classList.add("disabled");
-    document.getElementById("btn_status_4").classList.add("disabled");
+    document.getElementById("btn_status_1") ? document.getElementById("btn_status_1").classList.add("disabled") : '';
+    document.getElementById("btn_status_2") ? document.getElementById("btn_status_2").classList.add("disabled") : '';
+    document.getElementById("btn_status_3") ? document.getElementById("btn_status_3").classList.add("disabled") : '';
+    document.getElementById("btn_status_4") ? document.getElementById("btn_status_4").classList.add("disabled") : '';
 
     let pedzapButtons = document.querySelectorAll("a[href*='set_status']");
     let allButtonsDone = true;
@@ -38,10 +38,10 @@ function changeStatus(status){
     if(allButtonsDone == false){
         verifyLoading(status, pedzapButtons, pedzapButtons.length);
     }else{
-        document.getElementById("btn_status_1").classList.remove("disabled");
-        document.getElementById("btn_status_2").classList.remove("disabled");
-        document.getElementById("btn_status_3").classList.remove("disabled");
-        document.getElementById("btn_status_4").classList.remove("disabled");
+        document.getElementById("btn_status_1") ? document.getElementById("btn_status_1").classList.remove("disabled") : '';
+        document.getElementById("btn_status_2") ? document.getElementById("btn_status_2").classList.remove("disabled") : '';
+        document.getElementById("btn_status_3") ? document.getElementById("btn_status_3").classList.remove("disabled") : '';
+        document.getElementById("btn_status_4") ? document.getElementById("btn_status_4").classList.remove("disabled") : '';
         swal({
             title: 'Sucesso',
             text: 'Todos os registros tiveram seu status atualizado com sucesso.',

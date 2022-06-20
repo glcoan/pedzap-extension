@@ -28,15 +28,21 @@ import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgr
 
 /* ALERTA DE ATUALIZAÇÃO */
 
-let theme;
-chrome.storage.local.get('v2_0_0', (data)=>{
-	if(!data.v2_0_0){
+chrome.storage.local.get('v3_0_0', (data)=>{
+	if(!data.v3_0_0){
+		let theme;
 		chrome.storage.local.get('theme', (data)=>{
-			theme = data.theme;
+			if(data.theme){
+				theme = data.theme;
+			}else{
+				theme = 'light';
+			}
+			chrome.storage.local.clear();
+			
+			let msg = 'Nova versão disponível! (⌒‿⌒)\n>------------{ v0.0.0 }------------<\n';
+			chrome.storage.local.set({'atualizacao': msg});
+			chrome.storage.local.set({'theme': theme});
 		});
-		chrome.storage.local.clear();
-		var msg = 'Nova versão disponível! (⌒‿⌒)\n>------------{ v0.0.0 }------------<\n';
-		chrome.storage.local.set({'atualizacao': msg});
 	}
 });
 
@@ -47,14 +53,17 @@ setTimeout(()=>{
 				url: 'changelog.html'
 			});
 
-			// Limpa o storage
-			chrome.storage.local.clear();
-
-			// Define a váriavel de tema padrão
-			chrome.storage.local.set({'theme': theme});
-			
-			// Define a váriavel de versão para não aparecer o alerta denovo
-			chrome.storage.local.set({'v2_0_0': 'Mensagem de atualizacao já recebida!'});
+			let theme;
+			chrome.storage.local.get('theme', (data)=>{
+				theme = data.theme;
+				
+				// Limpa o storage
+				chrome.storage.local.clear();
+				
+				// Define a váriavel de versão para não aparecer o alerta denovo
+				chrome.storage.local.set({'v3_0_0': 'Mensagem de atualizacao já recebida!'});
+				chrome.storage.local.set({'theme': theme});
+			});
 		}else{
 			console.log("Sem atualizacao");
 		}
@@ -66,8 +75,6 @@ setTimeout(()=>{
 
 
 /* DEFINE FUNÇÕES PARA SEREM USADAS QUANDO CHEGAR UMA MENSAGEM NO ONMESSAGE */
-
-
 
 const functions = {
 	countTabs(){
