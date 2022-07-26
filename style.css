@@ -16,7 +16,7 @@ body.lista_itens{
 
 
 .props-actived, .props-btn-actived{
-	background-color: rgba(25, 135, 84, 0.6) !important;
+	background-color: rgba(45, 180, 97, 0.8) !important;
 	border: rgb(25, 135, 84) solid 2px !important;
 	font-weight: 600;
 	color: #ffffff;

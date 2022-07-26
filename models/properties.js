@@ -117,11 +117,6 @@ $(function(){
     
     /* FUNÇÕES PARA OS CHECKBOX'S DO CARD "PROPRIEDADES LISTADAS" NA PAGINA DE EDITAR MODELOS */
     
-	// Botão para clicar em todos os checkbox's
-	$('#btn_pro_all').click(function(){
-        $('input[type=checkbox]').click();
-	});
-    
 	// Checkbox para mostrar e esconder a propriedade "status" dos modelos
 	$('#btn_pro_status').click(function(){
         if($('#btn_pro_status').hasClass('props-disabled')){

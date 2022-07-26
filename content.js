@@ -326,9 +326,8 @@ if(insertItem){
 		}
 	});
 
-	document.querySelector("#form > div:nth-child(1) > div.portlet-title").insertAdjacentHTML('beforeEnd', 
-	'<img id="autoDrink" class="pull-right" style="width: 40px; cursor: pointer;" '+
-	'src="https://s.cornershopapp.com/product-images/1983811.png">');
+	document.querySelector("#form > div:nth-child(1) > div.portlet-title").insertAdjacentHTML('beforeEnd',
+	'<a href="#" id="autoDrink" class="btn btn-outline green pull-right"><i class="fa fa-bolt fa-lg"></i></a>');
 
 	document.querySelector("#autoDrink").addEventListener('click', function(){
 
@@ -385,7 +384,9 @@ if(insertItem){
 				}
 			}
 		}
-		
+
+		document.querySelector("#ite_horarios_venda").selectedIndex = 2;
+		document.querySelector("#ite_horarios_venda").dispatchEvent(new Event('change'));
 	});
 }
 

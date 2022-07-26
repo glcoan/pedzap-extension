@@ -1,10 +1,18 @@
+import { scriptTabMenu } from "../background.js";
+
 $(function(){
+
+    /* SCRIPT TAB MENU */
+
+        scriptTabMenu();
+
+    /* ====================================== */
 
     /* AÇÕES AO CARREGAR A PÁGINA */
     
         // Quando o dom carrega essa função é chamada para listar os itens
         $(document).ready(function(){
-            chrome.extension.getBackgroundPage().countTabs();
+            chrome.runtime.sendMessage({callFunction: "countTabs"});
             listItems();
         });
     
@@ -18,10 +26,23 @@ $(function(){
         // Timeout de 1 segundo para dar tempo de carregar os registros e aplicar essas alterações
         setTimeout(function(){
     
-            // Coloca borda verde nos elementos alterados
+            // Coloca borda verde nos elementos alterados e envia as informações para o bg
             $("input, textarea, select").change(function(){
                 $(this).addClass('border-success');
                 $('#save_itens').addClass('disabled');
+
+                if(this.id.includes('ite_group_') || this.id.includes('ite_template_')){
+                    var item = {
+                        id: this.id,
+                        value: this.selectedIndex
+                    }
+                }else{
+                    var item = {
+                        id: this.id,
+                        value: this.value
+                    }
+                }
+                chrome.runtime.sendMessage({item: item});
             });
             
             // Coloca borda valores 0 e 1 para preços e máximos + borda verde
@@ -57,7 +78,7 @@ $(function(){
                     itens = JSON.stringify(itens);
                     console.log("Array-1 = "+itens);
                     array1.push(itens);
-                    chrome.extension.getBackgroundPage().editItems();
+                    chrome.runtime.sendMessage({callFunction: "editItems"});
                 }
             });
     
@@ -107,10 +128,10 @@ $(function(){
     
         function listItems(){
             // Conta as abas novamente por prevenção
-            chrome.extension.getBackgroundPage().countTabs();
+            chrome.runtime.sendMessage({callFunction: "countTabs"});
     
             // Coleta todas as informações dos itens abertos e armazena no storage
-            chrome.extension.getBackgroundPage().editItems();
+            chrome.runtime.sendMessage({callFunction: "editItems"});
     
             // Exibe o spinner enquanto o setTimeout abaixo não é executado
             $("body").css({'overflow-y': 'hidden'});
@@ -145,8 +166,8 @@ $(function(){
                         $("#tipo_uni").show();
                         $("#tipo_tab").show();
     
-                        var thAtualizarUNI = '<th scope="col" class="atualiza-item prop-item-ext"><a href="#" id="refresh_items_uni" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
-                        var thAtualizarTAB = '<th scope="col" class="atualiza-item prop-item-ext"><a href="#" id="refresh_items_tab" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
+                        var thAtualizarUNI = '<th scope="col" class="atualiza-item prop-item-ext"><a href="#" id="refresh_items_uni" class="btn btn-primary text-light rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
+                        var thAtualizarTAB = '<th scope="col" class="atualiza-item prop-item-ext"><a href="#" id="refresh_items_tab" class="btn btn-primary text-light rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
 
                         var thSKU       = '<th scope="col" class="sku prop-item-ext">SKU</th>';
                         var thGrupo     = '<th scope="col" class="grupo prop-item-ext">Grupo</th>';
@@ -183,7 +204,7 @@ $(function(){
                         // Função do botão de atualizar todas as abas de itens com preço único
                         $('#refresh_items_uni').click(function(){
                             if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar Itens"?')){
-                                chrome.extension.getBackgroundPage().refreshItems('all_uni');
+                                chrome.runtime.sendMessage({callFunction: "refreshItems_allUni"});
                         
                                 $('.btn').addClass('disabled');
                         
@@ -196,7 +217,7 @@ $(function(){
                         // Função do botão de atualizar todas as abas de itens com preço tabela
                         $('#refresh_items_tab').click(function(){
                             if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar Itens"?')){
-                                chrome.extension.getBackgroundPage().refreshItems('all_tab');
+                                chrome.runtime.sendMessage({callFunction: "refreshItems_allTab"});
                         
                                 $('.btn').addClass('disabled');
                         
@@ -215,11 +236,14 @@ $(function(){
                             }
     
                             // botão para adicionar preços
-                            $("#tr_head_tab").append('<th scope="col" class="novo-preco prop-item-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success rounded-1"><i class="fas fa-plus"></i></a></th>');
+                            $("#tr_head_tab").append('<th scope="col" class="novo-preco prop-item-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success text-light rounded-1"><i class="fas fa-plus"></i></a></th>');
                             $("#btn-add-preco-all").click(function(){
                                 if(confirm("Deseja mesmo adicionar um novo campo de preço para todos os itens?")){
-                                    chrome.extension.getBackgroundPage().addPriceItems();
-                                    $('#send_items').click();
+                                    chrome.runtime.sendMessage({callFunction: "addPriceItems"});
+                                    $('.btn').addClass('disabled');
+                                    setTimeout(function(){
+                                        window.location.reload();
+                                    }, 2000);
                                 }
                             });
     
@@ -227,8 +251,11 @@ $(function(){
                             $("#tr_head_tab").append('<th scope="col" class="exclui-preco prop-item-ext"><a href="#" id="btn-remove-preco-all" class="btn btn-danger rounded-1"><i class="fas fa-minus"></i></a></th></tr>');
                             $("#btn-remove-preco-all").click(function(){
                                 if(confirm("Deseja mesmo remover o último preço de todos os itens?")){
-                                    chrome.extension.getBackgroundPage().removePriceItems();
-                                    $('#send_items').click();
+                                    chrome.runtime.sendMessage({callFunction: "removePriceItems"});
+                                    $('.btn').addClass('disabled');
+                                    setTimeout(function(){
+                                        window.location.reload();
+                                    }, 2000);
                                 }
                             });
                         });
@@ -282,12 +309,12 @@ $(function(){
                             switch(item.sell_robot){
                                 case 1:
                                     var sell_robot_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_robot_2 = '<option value="0">Não</option>';
+                                    var sell_robot_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_robot_1 = '<option value="1">Sim</option>';
-                                    var sell_robot_2 = '<option value="0" selected>Não</option>';
+                                    var sell_robot_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -295,12 +322,12 @@ $(function(){
                             switch(item.sell_webapp){
                                 case 1:
                                     var sell_webapp_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_webapp_2 = '<option value="0">Não</option>';
+                                    var sell_webapp_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_webapp_1 = '<option value="1">Sim</option>';
-                                    var sell_webapp_2 = '<option value="0" selected>Não</option>';
+                                    var sell_webapp_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -308,12 +335,12 @@ $(function(){
                             switch(item.sell_menu){
                                 case 1:
                                     var sell_menu_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_menu_2 = '<option value="0">Não</option>';
+                                    var sell_menu_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_menu_1 = '<option value="1">Sim</option>';
-                                    var sell_menu_2 = '<option value="0" selected>Não</option>';
+                                    var sell_menu_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -321,12 +348,12 @@ $(function(){
                             switch(item.req_robot){
                                 case 1:
                                     var req_robot_1 = '<option value="1" selected>Sim</option>';
-                                    var req_robot_2 = '<option value="0">Não</option>';
+                                    var req_robot_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_robot_1 = '<option value="1">Sim</option>';
-                                    var req_robot_2 = '<option value="0" selected>Não</option>';
+                                    var req_robot_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
                             
@@ -334,12 +361,12 @@ $(function(){
                             switch(item.req_webapp){
                                 case 1:
                                     var req_webapp_1 = '<option value="1" selected>Sim</option>';
-                                    var req_webapp_2 = '<option value="0">Não</option>';
+                                    var req_webapp_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_webapp_1 = '<option value="1">Sim</option>';
-                                    var req_webapp_2 = '<option value="0" selected>Não</option>';
+                                    var req_webapp_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -347,12 +374,12 @@ $(function(){
                             switch(item.req_menu){
                                 case 1:
                                     var req_menu_1 = '<option value="1" selected>Sim</option>';
-                                    var req_menu_2 = '<option value="0">Não</option>';
+                                    var req_menu_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_menu_1 = '<option value="1">Sim</option>';
-                                    var req_menu_2 = '<option value="0" selected>Não</option>';
+                                    var req_menu_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -360,12 +387,12 @@ $(function(){
                             switch(item.free_delivery){
                                 case 1:
                                     var free_delivery_1 = '<option value="1" selected>Sim</option>';
-                                    var free_delivery_2 = '<option value="0">Não</option>';
+                                    var free_delivery_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var free_delivery_1 = '<option value="1">Sim</option>';
-                                    var free_delivery_2 = '<option value="0" selected>Não</option>';
+                                    var free_delivery_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -373,16 +400,16 @@ $(function(){
                             switch(item.points){
                                 case 1:
                                     var points_1 = '<option value="1" selected>Sim</option>';
-                                    var points_2 = '<option value="0">Não</option>';
+                                    var points_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var points_1 = '<option value="1">Sim</option>';
-                                    var points_2 = '<option value="0" selected>Não</option>';
+                                    var points_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
-                            var tdAtualizar = '<td id="pro_ref_'+item.tab_id+'" class="text-center"><button id="btn-ref-item-'+item.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
+                            var tdAtualizar = '<td id="pro_ref_'+item.tab_id+'" class="text-center"><button id="btn-ref-item-'+item.tab_id+'" class="btn btn-primary text-light btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
                             var tdSKU       = '<td id="pro_sku_'+item.tab_id+'"><input id="ite_sku_'+item.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+item.sku+'"></td>';
                             var tdGrupo     = '<td id="pro_group_'+item.tab_id+'"><select id="ite_group_'+item.tab_id+'" class="form-select form-select-sm">'+item.groups+'</select></td>';
                             var tdTitulo    = '<td id="pro_title_'+item.tab_id+'"><input id="ite_title_'+item.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+item.title+'"></td>';
@@ -404,7 +431,7 @@ $(function(){
     
                             $('#btn-ref-item-'+item.tab_id).click(function(){
                                 if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do item "'+item.title+'"?')){
-                                    chrome.extension.getBackgroundPage().refreshItems(item.tab_id);
+                                    chrome.runtime.sendMessage({callFunction: "refreshItems_"+item.tab_id});
                                     $('.btn').addClass('disabled');
                                     setTimeout(function(){
                                         window.location.reload();
@@ -425,12 +452,12 @@ $(function(){
                             switch(item.sell_robot){
                                 case 1:
                                     var sell_robot_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_robot_2 = '<option value="0">Não</option>';
+                                    var sell_robot_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_robot_1 = '<option value="1">Sim</option>';
-                                    var sell_robot_2 = '<option value="0" selected>Não</option>';
+                                    var sell_robot_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -438,12 +465,12 @@ $(function(){
                             switch(item.sell_webapp){
                                 case 1:
                                     var sell_webapp_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_webapp_2 = '<option value="0">Não</option>';
+                                    var sell_webapp_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_webapp_1 = '<option value="1">Sim</option>';
-                                    var sell_webapp_2 = '<option value="0" selected>Não</option>';
+                                    var sell_webapp_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -451,12 +478,12 @@ $(function(){
                             switch(item.sell_menu){
                                 case 1:
                                     var sell_menu_1 = '<option value="1" selected>Sim</option>';
-                                    var sell_menu_2 = '<option value="0">Não</option>';
+                                    var sell_menu_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var sell_menu_1 = '<option value="1">Sim</option>';
-                                    var sell_menu_2 = '<option value="0" selected>Não</option>';
+                                    var sell_menu_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -464,12 +491,12 @@ $(function(){
                             switch(item.req_robot){
                                 case 1:
                                     var req_robot_1 = '<option value="1" selected>Sim</option>';
-                                    var req_robot_2 = '<option value="0">Não</option>';
+                                    var req_robot_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_robot_1 = '<option value="1">Sim</option>';
-                                    var req_robot_2 = '<option value="0" selected>Não</option>';
+                                    var req_robot_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
                             
@@ -477,12 +504,12 @@ $(function(){
                             switch(item.req_webapp){
                                 case 1:
                                     var req_webapp_1 = '<option value="1" selected>Sim</option>';
-                                    var req_webapp_2 = '<option value="0">Não</option>';
+                                    var req_webapp_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_webapp_1 = '<option value="1">Sim</option>';
-                                    var req_webapp_2 = '<option value="0" selected>Não</option>';
+                                    var req_webapp_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -490,12 +517,12 @@ $(function(){
                             switch(item.req_menu){
                                 case 1:
                                     var req_menu_1 = '<option value="1" selected>Sim</option>';
-                                    var req_menu_2 = '<option value="0">Não</option>';
+                                    var req_menu_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var req_menu_1 = '<option value="1">Sim</option>';
-                                    var req_menu_2 = '<option value="0" selected>Não</option>';
+                                    var req_menu_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -503,12 +530,12 @@ $(function(){
                             switch(item.free_delivery){
                                 case 1:
                                     var free_delivery_1 = '<option value="1" selected>Sim</option>';
-                                    var free_delivery_2 = '<option value="0">Não</option>';
+                                    var free_delivery_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var free_delivery_1 = '<option value="1">Sim</option>';
-                                    var free_delivery_2 = '<option value="0" selected>Não</option>';
+                                    var free_delivery_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
@@ -516,16 +543,16 @@ $(function(){
                             switch(item.points){
                                 case 1:
                                     var points_1 = '<option value="1" selected>Sim</option>';
-                                    var points_2 = '<option value="0">Não</option>';
+                                    var points_2 = '<option value="2">Não</option>';
                                 break;
 
                                 case 2:
                                     var points_1 = '<option value="1">Sim</option>';
-                                    var points_2 = '<option value="0" selected>Não</option>';
+                                    var points_2 = '<option value="2" selected>Não</option>';
                                 break;
                             }
 
-                            var tdAtualizar = '<td id="pro_ref_'+item.tab_id+'" class="text-center"><button id="btn-ref-item-'+item.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
+                            var tdAtualizar = '<td id="pro_ref_'+item.tab_id+'" class="text-center"><button id="btn-ref-item-'+item.tab_id+'" class="btn btn-primary text-light btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
                             var tdSKU       = '<td id="pro_sku_'+item.tab_id+'"><input id="ite_sku_'+item.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+item.sku+'"></td>';
                             var tdGrupo     = '<td id="pro_group_'+item.tab_id+'"><select id="ite_group_'+item.tab_id+'" class="form-select form-select-sm">'+item.groups+'</select></td>';
                             var tdTitulo    = '<td id="pro_title_'+item.tab_id+'"><input id="ite_title_'+item.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+item.title+'"></td>';
@@ -546,7 +573,7 @@ $(function(){
     
                             $('#btn-ref-item-'+item.tab_id).click(function(){
                                 if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do item "'+item.title+'"?')){
-                                    chrome.extension.getBackgroundPage().refreshItems(item.tab_id);
+                                    chrome.runtime.sendMessage({callFunction: "refreshItems_"+item.tab_id});
                                     $('.btn').addClass('disabled');
                                     setTimeout(function(){
                                         window.location.reload();
@@ -576,10 +603,10 @@ $(function(){
                                 }
     
                                 // Botão para adicionar preço individualmente
-                                $('#'+item.tab_id).append('<td id="pro_add_'+item.tab_id+'" class="text-center"><button id="btn-add-preco-'+item.tab_id+'" class="btn btn-success btn-sm rounded-1"><i class="fas fa-plus"></i></button></td>');
+                                $('#'+item.tab_id).append('<td id="pro_add_'+item.tab_id+'" class="text-center"><button id="btn-add-preco-'+item.tab_id+'" class="btn btn-success text-light btn-sm rounded-1"><i class="fas fa-plus"></i></button></td>');
                                 $('#btn-add-preco-'+item.tab_id).click(function(){
-                                    if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo adicionar um novo campo de preço para o item "'+item.title+'"?')){
-                                        chrome.extension.getBackgroundPage().addPriceItems(item.tab_id);
+                                    if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo adicionar um novo campo de preço para o item "'+item.title+'"?')){
+                                        chrome.runtime.sendMessage({callFunction: "addPriceItems_"+item.tab_id});
                                         $('.btn').addClass('disabled');
                                         setTimeout(function(){
                                             window.location.reload();
@@ -590,8 +617,8 @@ $(function(){
                                 // Botão para remover preço individualmente
                                 $('#'+item.tab_id).append('<td id="pro_remove_'+item.tab_id+'" class="text-center"><button id="btn-remove-preco-'+item.tab_id+'" class="btn btn-danger btn-sm rounded-1"><i class="fas fa-minus"></i></button></td>');
                                 $('#btn-remove-preco-'+item.tab_id).click(function(){
-                                    if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo remover o último campo de preço do item "'+item.title+'"?')){
-                                        chrome.extension.getBackgroundPage().removePriceItems(item.tab_id);
+                                    if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo remover o último campo de preço do item "'+item.title+'"?')){
+                                        chrome.runtime.sendMessage({callFunction: "removePriceItems_"+item.tab_id});
                                         $('.btn').addClass('disabled');
                                         setTimeout(function(){
                                             window.location.reload();
@@ -627,7 +654,7 @@ $(function(){
                         $('.btn').addClass('disabled');
                         $('input[type="checkbox"]').prop('disabled', true);
                         $("#dashboard").addClass('text-center');
-                        $("#dashboard").append('<p><strong>Nenhum registro encontrado ...</strong></p><div><button class="btn btn-primary" id="atualizar">Atualizar</button></div>');
+                        $("#dashboard").append('<p><strong>Nenhum registro encontrado ...</strong></p><div><button class="btn btn-primary text-light" id="atualizar">Atualizar</button></div>');
                         $('#atualizar').click(function(){
                             window.location.reload();
                         });
@@ -737,7 +764,7 @@ $(function(){
                 chrome.storage.local.set({'itens': newItem});
     
                 // Conta as abas denovo pra poder comparar na hora de enviar
-                chrome.extension.getBackgroundPage().countTabs();
+                chrome.runtime.sendMessage({callFunction: "countTabs"});
             });
     
             // Envia as informações do novo array para as abas
@@ -749,7 +776,7 @@ $(function(){
                         if(tabs.item_tabs == data.itens.length){
                             console.log('Quantidade válida');
                             console.log(data.itens);
-                            chrome.extension.getBackgroundPage().sendItems();
+                            chrome.runtime.sendMessage({callFunction: "sendItems"});
     
                             // Habilita novamente os botões
                             setTimeout(function(){
@@ -772,9 +799,9 @@ $(function(){
     /* FUNÇÃO PARA SALVAR TODOS OS ITENS ABERTOS NAS ABAS */
     
         $('#save_items').click(function(){
-            if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE SALVAR!*\n\nDeseja mesmo salvar todos os itens?")){
+            if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n\nDeseja mesmo salvar todos os itens?")){
                 $('.btn').addClass('disabled');
-                chrome.extension.getBackgroundPage().saveItems();
+                chrome.runtime.sendMessage({callFunction: "saveItems"});
                 setTimeout(function(){
                     $('.btn').removeClass('disabled');
                 }, 3000);
@@ -787,8 +814,10 @@ $(function(){
     
     /* FUNÇÃO PARA FECHAR TODOS OS ITENS ABERTOS NAS ABAS */
     
-        $('#close_item').click(function(){
-            chrome.extension.getBackgroundPage().closeTabItem();
+        $('#close_items').click(function(){
+            if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM SALVAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os itens?")){
+                chrome.runtime.sendMessage({callFunction: "closeTabItem"});
+            }
         });
     
     /* ====================================== */
@@ -796,10 +825,11 @@ $(function(){
 
 
     /* BOTÃO DE MUDAR O TEMA DA PÁGINA */
-    
+    /* FAZER AINDA
     $('#bt_page_theme').click(function(){
-        chrome.extension.getBackgroundPage().closeTabItem();
+        chrome.runtime.sendMessage({callFunction: "closeTabItem"});
     });
+    */
 
 /* ====================================== */
     

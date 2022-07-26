@@ -1,1 +1,0 @@
-var botaoNovoPreco = document.querySelector("[data-repeater-create]").click();

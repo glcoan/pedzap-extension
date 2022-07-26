@@ -1,46 +1,10 @@
+import { scriptTabMenu } from "../background.js";
+
 $(function(){
 
 /* SCRIPT TAB MENU */
 
-	var tabSlide1 = document.getElementById("tab-slide-1");
-	var tabSlide2 = document.getElementById("tab-slide-2");
-	var sectionSlide1 = document.getElementById("section-slide-1");
-	var sectionSlide2 = document.getElementById("section-slide-2");
-
-	document.getElementById("tab-1").addEventListener("click", ()=>{
-		if(tabSlide1.classList.contains("invisible") && sectionSlide1.classList.contains("invisible")){
-			tabSlide2.style.animation = "tab-slide-to-left 1s";
-			tabSlide1.style.animation = "";
-
-			sectionSlide2.style.animation = "section-slide-to-right-1 1s";
-			sectionSlide1.style.animation = "section-slide-to-right-2 1s";
-			sectionSlide1.classList.remove("invisible");
-
-			setTimeout(() => {
-				tabSlide1.classList.remove("invisible");
-				tabSlide2.classList.add("invisible");
-
-				sectionSlide2.classList.add("invisible");
-			}, 980);
-		}
-	});
-	document.getElementById("tab-2").addEventListener("click", ()=>{
-		if(tabSlide2.classList.contains("invisible") && sectionSlide2.classList.contains("invisible")){
-			tabSlide1.style.animation = "tab-slide-to-right 1s";
-			tabSlide2.style.animation = "";
-
-			sectionSlide1.style.animation = "section-slide-to-left-1 1s";
-			sectionSlide2.style.animation = "section-slide-to-left-2 1s";
-			sectionSlide2.classList.remove("invisible");
-
-			setTimeout(() => {
-				tabSlide1.classList.add("invisible");
-				tabSlide2.classList.remove("invisible");
-
-				sectionSlide1.classList.add("invisible");
-			}, 980);
-		}
-	});
+	scriptTabMenu();
 
 /* ====================================== */
 
@@ -69,7 +33,7 @@ $(function(){
 			$(this).addClass('border-success');
 			$('#save_models').removeClass('disabled');
 
-			model = {
+			let model = {
 				id: this.id,
 				value: this.value
 			}
@@ -189,7 +153,7 @@ $(function(){
 						$('#qtde_modelos').html(modelos.length);
 					}
 
-					var thAtualizar = '<th scope="col" class="atualiza-modelo prop-modelo-ext"><a href="#" id="refresh_models" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
+					var thAtualizar = '<th scope="col" class="atualiza-modelo prop-modelo-ext"><a href="#" id="refresh_models" class="btn btn-primary rounded-1 text-light"><i class="fas fa-redo-alt"></i></a></th>';
 					var thStatus    = '<th scope="col" class="status prop-modelo-ext">Status</th>';
 					var thSKU       = '<th scope="col" class="sku prop-modelo-ext">SKU</th>';
 					var thTitulo    = '<th scope="col" class="titulo prop-modelo-ext">Título</th>';
@@ -224,7 +188,7 @@ $(function(){
 						}
 
 						// botão para adicionar preços
-						$("#tr_head").append('<th scope="col" class="novo-preco prop-modelo-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success rounded-1"><i class="fas fa-plus"></i></a></th>');
+						$("#tr_head").append('<th scope="col" class="novo-preco prop-modelo-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success rounded-1 text-light"><i class="fas fa-plus"></i></a></th>');
 						$("#btn-add-preco-all").click(function(){
 							if(confirm("Deseja mesmo adicionar um novo campo de preço para todos os modelos?")){
 								chrome.runtime.sendMessage({callFunction: "addPriceModels"});
@@ -290,7 +254,22 @@ $(function(){
 						}
 
 						// Adiciona botão de atualizar página do modelo individualmente	--- Exibe o status, sku, titulo e descrição
-						$("#tbody").append('<tr id="'+modelo.tab_id+'"><td id="pro_ref_'+modelo.tab_id+'" class="text-center"><button id="btn-ref-model-'+modelo.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td><td id="pro_status_'+modelo.tab_id+'"><select id="mod_status_'+modelo.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select></td><td id="pro_sku_'+modelo.tab_id+'"><input id="mod_sku_'+modelo.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+modelo.sku+'"></td><td id="pro_title_'+modelo.tab_id+'"><input id="mod_title_'+modelo.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+modelo.title+'"></td><td id="pro_description_'+modelo.tab_id+'"><textarea id="mod_description_'+modelo.tab_id+'" class="form-control form-control-sm descricao" type="text" rows="1">'+modelo.description+'</textarea></td>');
+						$("#tbody").append('<tr id="'+modelo.tab_id+'">'+
+							'<td id="pro_ref_'+modelo.tab_id+'" class="text-center">'+
+								'<button id="btn-ref-model-'+modelo.tab_id+'" class="btn btn-primary btn-sm rounded-1 text-light"><i class="fas fa-redo-alt"></i></button>'+
+							'</td>'+
+							'<td id="pro_status_'+modelo.tab_id+'">'+
+								'<select id="mod_status_'+modelo.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select>'+
+							'</td>'+
+							'<td id="pro_sku_'+modelo.tab_id+'">'+
+								'<input id="mod_sku_'+modelo.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+modelo.sku+'">'+
+							'</td>'+
+							'<td id="pro_title_'+modelo.tab_id+'">'+
+								'<input id="mod_title_'+modelo.tab_id+'" class="form-control form-control-sm titulo" type="text" value="'+modelo.title+'">'+
+							'</td>'+
+							'<td id="pro_description_'+modelo.tab_id+'">'+
+								'<textarea id="mod_description_'+modelo.tab_id+'" class="form-control form-control-sm descricao" type="text" rows="1">'+modelo.description+'</textarea>'+
+							'</td>');
 
 						$('#btn-ref-model-'+modelo.tab_id).click(function(){
 							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
@@ -324,7 +303,7 @@ $(function(){
 							}
 
 							// Botão para adicionar preço individualmente
-							$('#'+modelo.tab_id).append('<td id="pro_add_'+modelo.tab_id+'" class="text-center"><button id="btn-add-preco-'+modelo.tab_id+'" class="btn btn-success btn-sm rounded-1"><i class="fas fa-plus"></i></button></td>');
+							$('#'+modelo.tab_id).append('<td id="pro_add_'+modelo.tab_id+'" class="text-center"><button id="btn-add-preco-'+modelo.tab_id+'" class="btn btn-success btn-sm rounded-1 text-light"><i class="fas fa-plus"></i></button></td>');
 							$('#btn-add-preco-'+modelo.tab_id).click(function(){
 								chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id});
 								$('.btn').addClass('disabled');
@@ -376,7 +355,7 @@ $(function(){
 /* FUNÇÃO PARA SALVAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
 	$('#save_models').click(function(){
-		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE SALVAR!*\n\nDeseja mesmo salvar todos os modelos?")){
+		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n\nDeseja mesmo salvar todos os modelos?")){
 			$('.btn').addClass('disabled');
 			chrome.runtime.sendMessage({callFunction: "saveModels"});
 			setTimeout(function(){
@@ -392,7 +371,7 @@ $(function(){
 /* FUNÇÃO PARA FECHAR TODOS OS MODELOS ABERTOS NAS ABAS */
 
 	$('#close_models').click(function(){
-		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os modelos?")){
+		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM SALVAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os modelos?")){
 			chrome.runtime.sendMessage({callFunction: "closeTabModel"});
 		}
 	});

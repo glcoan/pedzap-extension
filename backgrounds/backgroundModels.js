@@ -76,7 +76,7 @@ export function editModels(){
 }
 
 export function sendModel(propertie, value, priceIndex){
-	function changeInput(inputId, type){
+	function changeInput(inputId, type, value, priceIndex){
 		if(type == "input"){
 			var input = document.getElementById(inputId);
 			input.value = value;
@@ -95,25 +95,25 @@ export function sendModel(propertie, value, priceIndex){
 			array[priceIndex].dispatchEvent(new Event('input'));
 		}
 	}
-
+	
 	switch (propertie) {
 		case 'title':
-			changeInput("mod_titulo", "input");
+			changeInput("mod_titulo", "input", value);
 			break;
 		case 'description':
-			changeInput("mod_descricao", "input");
+			changeInput("mod_descricao", "input", value);
 			break;
 		case 'sku':
-			changeInput("mod_sku", "input");
+			changeInput("mod_sku", "input", value);
 			break;
 		case 'status':
-			changeInput("mod_status", "select");
+			changeInput("mod_status", "select", value);
 			break;
 		case 'price':
-			changeInput("", "decimal");
+			changeInput("", "decimal", value, priceIndex);
 			break;
 		case 'maximum':
-			changeInput("", "inteiro");
+			changeInput("", "inteiro", value, priceIndex);
 			break;
 	}
 

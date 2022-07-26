@@ -1,10 +1,11 @@
+/*
 setTimeout(function(){
     chrome.extension.getBackgroundPage().catchWebappOpened();
-    console.log("Clicou");
 }, 300);
+*/
 
 /* VAI PARA PÁGINA CUSTOMIZAR WEBAPP */
-
+/*
 $('#bt_gera_script').click(function(){
     chrome.storage.local.get('helpers_webapp_url', function(url){
         var url = url.helpers_webapp_url;
@@ -33,17 +34,17 @@ $('#bt_gera_script').click(function(){
         }
     });
 });
-    
+*/
 /* ====================================== */
 
 
 
 /* PREPARAR PEDIDOS AUTOMATICAMENTE */
-
+/*
 $('#auto-prepare').click(function(){
 	if(confirm('TODOS OS PEDIDOS TERÃO STATUS "PREPARADO" E NOTIFICAR CLIENTE COMO "NÃO"!\n\nDeseja mesmo fazer isso?')){
 		chrome.extension.getBackgroundPage().autoPrepare();
 	}
 });
-
+*/
 /* ====================================== */

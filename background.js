@@ -19,11 +19,53 @@ export const urlWebapp = "webapp/globais/home";
 export const urlEstab = "/estabelecimento";
 export const urlAdmin = "/administrador";
 
+export function scriptTabMenu() {
+	var tabSlide1 = document.getElementById("tab-slide-1");
+	var tabSlide2 = document.getElementById("tab-slide-2");
+	var sectionSlide1 = document.getElementById("section-slide-1");
+	var sectionSlide2 = document.getElementById("section-slide-2");
+
+	document.getElementById("tab-1").addEventListener("click", ()=>{
+		if(tabSlide1.classList.contains("invisible") && sectionSlide1.classList.contains("invisible")){
+			tabSlide2.style.animation = "tab-slide-to-left 1s";
+			tabSlide1.style.animation = "";
+
+			sectionSlide2.style.animation = "section-slide-to-right-1 1s";
+			sectionSlide1.style.animation = "section-slide-to-right-2 1s";
+			sectionSlide1.classList.remove("invisible");
+
+			setTimeout(() => {
+				tabSlide1.classList.remove("invisible");
+				tabSlide2.classList.add("invisible");
+
+				sectionSlide2.classList.add("invisible");
+			}, 980);
+		}
+	});
+	document.getElementById("tab-2").addEventListener("click", ()=>{
+		if(tabSlide2.classList.contains("invisible") && sectionSlide2.classList.contains("invisible")){
+			tabSlide1.style.animation = "tab-slide-to-right 1s";
+			tabSlide2.style.animation = "";
+
+			sectionSlide1.style.animation = "section-slide-to-left-1 1s";
+			sectionSlide2.style.animation = "section-slide-to-left-2 1s";
+			sectionSlide2.classList.remove("invisible");
+
+			setTimeout(() => {
+				tabSlide1.classList.add("invisible");
+				tabSlide2.classList.remove("invisible");
+
+				sectionSlide1.classList.add("invisible");
+			}, 980);
+		}
+	});
+}
+
 import {} from "./backgrounds/Answers.js";
 import {} from "./backgrounds/AutoCardapio.js";
-import {} from "./backgrounds/backgroundItems.js";
 import {} from "./backgrounds/CustomWebapp.js";
 import { sendModel, editModels, refreshModels, addPriceModels, removePriceModels, saveModels } from "./backgrounds/backgroundModels.js";
+import { sendItem, editItems, refreshItems, addPriceItems, removePriceItems, saveItems } from "./backgrounds/backgroundItems.js";
 import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgrounds/Tabs.js";
 
 /* ALERTA DE ATUALIZAÇÃO */
@@ -116,13 +158,22 @@ const functions = {
 	addPriceModels(i){
 		addPriceModels(i);
 	},
+	addPriceItems(i){
+		addPriceItems(i);
+	},
 
 	removePriceModels(i){
 		removePriceModels(i);
 	},
+	removePriceItems(i){
+		removePriceItems(i);
+	},
 
 	saveModels(){
 		saveModels();
+	},
+	saveItems(){
+		saveItems();
 	}
 }
 
@@ -254,27 +305,37 @@ chrome.runtime.onMessage.addListener(function(request){
 			});
 		}
 	}
+	if(request.item){
+		let item = request.item.id.split('_');
+
+		let tab_id = parseInt(item[item.length - 1]);
+		let propertie = item[1];
+		let value = request.item.value;
+
+		if(propertie == "sell" || propertie == "req"){
+			propertie = propertie+'_'+item[2];
+			chrome.scripting.executeScript({
+				target: {tabId: tab_id},
+				func: sendItem,
+				args: [propertie, value]
+			});
+		}else if(propertie == "t"){
+			propertie = propertie+'_'+item[2];
+			let priceIndex = item[3];
+			chrome.scripting.executeScript({
+				target: {tabId: tab_id},
+				func: sendItem,
+				args: [propertie, value, priceIndex]
+			});
+		}else{
+			chrome.scripting.executeScript({
+				target: {tabId: tab_id},
+				func: sendItem,
+				args: [propertie, value]
+			});
+		}
+	}
 	return true;
 });
 
 /* ====================================== */
-
-
-
-/* PREPARAR PEDIDOS AUTOMATICAMENTE
-
-function autoPrepare(){
-	chrome.tabs.query({}, function(tabs){
-		tabs.forEach(function(tab){
-			if(tab.url.includes(urlEditarPedidos)){
-				var id = tab.id;
-				chrome.tabs.executeScript(id, {file: 'helpers/auto-prepare.js'});
-
-				setTimeout(function(){
-					chrome.tabs.remove(id);
-				},8000);
-			}
-		});
-	});
-}
-*/
