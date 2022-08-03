@@ -35,9 +35,7 @@ function modalQrCode() {
                     '<a href="" style="color: '+color2+';" download="QrCode.png"><i class="fa fa-qrcode fa-5x"></i></a>'+
                 '</button>'+
             '</div>'+
-            '<span class="tooltiptext img-rounded" style="top: 148px; right: 100px; position: fixed; color: white; background-color: #333; padding: 3px; visibility: hidden;">'+
-                'QrCode baixado com sucesso!<br>Clique <a id="editQrcode" href="#" style="color: #00f1aa;">aqui</a> para customizar'+
-            '</span>'+
+            '<span class="tooltiptext img-rounded" style="visibility: hidden;"></span>'+
         '</div>'+
         '<div id="qrCodeGerado" hidden></div>'
     );
@@ -115,8 +113,4 @@ document.getElementById('btnCloseQrCode').addEventListener("click", function(){
 
 document.getElementById('btnGeraQrCode').addEventListener("click", function(){
     document.querySelector(".tooltiptext").style.visibility = "visible";
-});
-
-document.querySelector("#editQrcode").addEventListener('click', function(){
-    chrome.runtime.sendMessage({mensagem: 'Ola'});
 });

@@ -47,7 +47,7 @@ function injectCode(src) {
 }
 
 var verifyEditConfigs = setInterval(() => {
-	if(editConfigs != undefined){
+	if(typeof editConfigs !== undefined){
 		clearInterval(verifyEditConfigs);
 		if(editConfigs == true){
 				
@@ -105,9 +105,9 @@ if(
 		listItems ||
 		listModels ||
 		listQuestions ||
-		listAnswers ||
-		listOrders ||
-		listClients
+		listAnswers //||
+		//listOrders ||
+		//listClients
 	)
 ){
 	
@@ -297,6 +297,7 @@ if(register){
 
 if(insertItem){
 
+	/* Recurso de inserção de inputs por voz */
 	let recognition = null;
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(SpeechRecognition !== undefined){
@@ -305,12 +306,17 @@ if(insertItem){
 
 	document.querySelector("#form > div:nth-child(1) > div.portlet-body > div:nth-child(3) > div > div > label").insertAdjacentHTML(
 		'afterEnd', 
-		'<div style="display: inline; margin: 0px 8px; padding: 0px 5px; color: #32C4D1; border: 1px solid #32C4D1; cursor: pointer;" id="mic-input-titulo"><i class="fa fa-microphone"></i></div>'
+		'<div class="btn btn-outline green" style="display: inline; margin: 0px 8px; padding: 0px 5px;" id="mic-input-titulo"><i class="fa fa-microphone"></i></div>'
+	);
+
+	document.querySelector("#form > div:nth-child(1) > div.portlet-body > div:nth-child(4) > div > div > label").insertAdjacentHTML(
+		'afterEnd', 
+		'<div class="btn btn-outline green" style="display: inline; margin: 0px 8px; padding: 0px 5px;" id="mic-input-descricao"><i class="fa fa-microphone"></i></div>'
 	);
 
 	document.querySelector("#mic-input-titulo").addEventListener("click", ()=>{
 		if(recognition !== null) {
-			console.log("Clicou e instanciou o onjeto!")
+			console.log("Clicou e instanciou o objeto!")
 			recognition.onstart = () => {
 				console.log("iniciou");
 			}
@@ -326,8 +332,19 @@ if(insertItem){
 		}
 	});
 
+	document.querySelector("#mic-input-descricao").addEventListener("click", ()=>{
+		if(recognition !== null) {
+			recognition.onresult = (e) => {
+				let texto = e.results[0][0].transcript;
+				texto = texto[0].toUpperCase() + texto.substr(1);
+				document.querySelector("#ite_descricao").value = texto;
+			}
+			recognition.start();
+		}
+	});
+
 	document.querySelector("#form > div:nth-child(1) > div.portlet-title").insertAdjacentHTML('beforeEnd',
-	'<a href="#" id="autoDrink" class="btn btn-outline green pull-right"><i class="fa fa-bolt fa-lg"></i></a>');
+	'<a id="autoDrink" class="btn btn-outline green pull-right"><i class="fa fa-bolt fa-lg"></i></a>');
 
 	document.querySelector("#autoDrink").addEventListener('click', function(){
 

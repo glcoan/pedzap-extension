@@ -1,18 +1,21 @@
+import { scriptTabMenu } from "../background.js";
+
 $(function(){
+
+/* SCRIPT TAB MENU */
+
+	scriptTabMenu();
+
+/* ====================================== */
+
+
 
 /* AÇÕES AO CARREGAR A PÁGINA */
 
 	// Quando o dom carrega essa função é chamada para listar os respostas
 	$(document).ready(function(){
-		chrome.extension.getBackgroundPage().countTabs();
+		chrome.runtime.sendMessage({callFunction: "countTabs"}, (response) => { console.log(response); });
 		listAnswers();
-	});
-
-	// Atualiza listagem de respostas e marca todos os checkbox das propriedades listadas
-	$('#bt_refresh_page').click(function(){
-		if(confirm("Você PERDERÁ todas as alterações caso não tenha salvo ou enviado para as abas! Deseja mesmo atualizar?")){
-			window.location.reload();
-		}
 	});
 
 	// Timeout de 1 segundo para dar tempo de carregar os registros e aplicar essas alterações
@@ -22,22 +25,48 @@ $(function(){
 		$("input, textarea, select").change(function(){
 			$(this).addClass('border-success');
 			$(this).removeClass('border-danger');
-			$('#save_answers').addClass('disabled');
+
+			if(this.id.includes('res_template_') || this.id.includes('res_categorie_') || this.id.includes('res_model_') || (this.id.includes('res_price_') && this.tagName == 'SELECT') ){
+				var answer = {
+					id: this.id,
+					value: this.selectedIndex
+				}
+			}else{
+				var answer = {
+					id: this.id,
+					value: this.value
+				}
+				console.log(answer);
+			}
+			chrome.runtime.sendMessage({answer: answer}, (response) => { console.log(response); });
 		});
-		
-		$("[id^='pro_model_']").change(function(){
-			var id = this.id.substring(10);
-			$('#res_price_'+id).prop('disabled', true).addClass('border-warning');
-			$('#warning').html('<strong>Envie as informações para desbloquear os campos!</strong>');
+
+        $("[id^='pro_model_']").change(function(){
+			let id = this.id.substring(10);
+
+			let select = document.getElementById('res_price_'+id);
+			select.selectedIndex = 0;
+			select.dispatchEvent(new Event('change'));
+			$('#res_price_'+id).prop('disabled', true).addClass('border-danger');
+
+			$('#warning').show();
 		});
 
 		$("[id^='pro_categorie_']").change(function(){
-			var id = this.id.substring(14);
-			$('#res_price_'+id).prop('disabled', true).addClass('border-warning');
-			$('#res_model_'+id).prop('disabled', true).addClass('border-warning');
-			$('#warning').html('<strong>Envie as informações para desbloquear os campos!</strong>');
-		});
+			let id = this.id.substring(14);
 
+			let select1 = document.getElementById('res_price_'+id);
+			select1.selectedIndex = 0;
+			select1.dispatchEvent(new Event('change'));
+			$('#res_price_'+id).prop('disabled', true).addClass('border-danger');
+			
+			let select2 = document.getElementById('res_model_'+id);
+			select2.selectedIndex = 0;
+			select2.dispatchEvent(new Event('change'));
+			$('#res_model_'+id).prop('disabled', true).addClass('border-danger');
+			
+			$('#warning').show();
+		});
 
 		// Insere uma borda vermelha nos selects que estão como "Selecione"
 		var selects = document.querySelectorAll("select");
@@ -68,7 +97,7 @@ $(function(){
 				respostas = JSON.stringify(respostas);
 				console.log("Array-1 = "+respostas);
 				array1.push(respostas);
-				chrome.extension.getBackgroundPage().editAnswers();
+				chrome.runtime.sendMessage({callFunction: "editAnswers"}, (response) => { console.log(response); });
 			}
 		});
 
@@ -115,11 +144,9 @@ $(function(){
 /* FUNÇÃO PARA LISTAR TODAS  AS RESPOSTAS */
 
 	function listAnswers(){
-		// Conta as abas novamente por prevenção
-		chrome.extension.getBackgroundPage().countTabs();
 
 		// Coleta todas as informações dos respostas abertos e armazena no storage
-		chrome.extension.getBackgroundPage().editAnswers();
+		chrome.runtime.sendMessage({callFunction: "editAnswers"}, (response) => { console.log(response); });
 
 		// Exibe o spinner enquanto o setTimeout abaixo não é executado
 		$("body").css({'overflow-y': 'hidden'});
@@ -127,15 +154,12 @@ $(function(){
 		$("#list_answers_vin").html('');
 		$("#tipo_ind").hide();
 		$("#tipo_vin").hide();
-		$("#dashboard").hide();
 		$("#loading-1").html('<div id="spinner" class="spinner-border text-success" style="width: 80px; height: 80px;" role="status"><span class="visually-hidden">Loading...</span></div>');
-
 
 		// setTimeout para dar tempo de coletar todos os dados das abas de respostas
 		setTimeout(function(){
 			// Remove o spinner para listar os respostas
 			$("#spinner").hide();
-			$("#dashboard").show();
 			$("body").css({'overflow-y': 'auto'});
 
 			// Pega o array de informações dos respostas armazenado no storage
@@ -144,18 +168,17 @@ $(function(){
 
 				// If para não gerar erro caso não tenha nenhum resposta aberto
 				if(respostas){
-					$('#send_answers').removeClass('disabled');
 					if(respostas.length == 1){
-						$('#qtde_respostas').html('(' + respostas.length + ' resposta)');
+						$('#qtde_respostas').html(respostas.length);
 					}else{
-						$('#qtde_respostas').html('(' + respostas.length + ' respostas)');
+						$('#qtde_respostas').html(respostas.length);
 					}
 
 					$("#tipo_ind").show();
 					$("#tipo_vin").show();
 
-					var thAtualizarIND = '<th scope="col" class="atualiza-resposta prop-resposta-ext"><a href="#" id="refresh_answers_ind" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
-					var thAtualizarVIN = '<th scope="col" class="atualiza-resposta prop-resposta-ext"><a href="#" id="refresh_answers_vin" class="btn btn-primary rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
+					var thAtualizarIND = '<th scope="col" class="atualiza-resposta prop-resposta-ext"><a href="#" id="refresh_answers_allInd" class="btn btn-primary text-light rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
+					var thAtualizarVIN = '<th scope="col" class="atualiza-resposta prop-resposta-ext"><a href="#" id="refresh_answers_allVin" class="btn btn-primary text-light rounded-1"><i class="fas fa-redo-alt"></i></a></th>';
 					
 					var thOrigem    = '<th scope="col" class="origem prop-resposta-ext">Origem</th>';
 					var thStatus    = '<th scope="col" class="status prop-resposta-ext">Status</th>';
@@ -186,9 +209,9 @@ $(function(){
 					);
 
 					// Função do botão de atualizar todas as abas de respostas individuais
-					$('#refresh_answers_ind').click(function(){
+					$('#refresh_answers_allInd').click(function(){
 						if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar respostas" individuais?')){
-							chrome.extension.getBackgroundPage().refreshAnswers('all_ind');
+							chrome.runtime.sendMessage({callFunction: "refreshAnswers_allInd"}), (response) => { console.log(response); }; 
 					
 							$('.btn').addClass('disabled');
 					
@@ -199,9 +222,9 @@ $(function(){
 					});
 
 					// Função do botão de atualizar todas as abas de respostas vinculadas
-					$('#refresh_answers_vin').click(function(){
+					$('#refresh_answers_allVin').click(function(){
 						if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar respostas" vinculadas?')){
-							chrome.extension.getBackgroundPage().refreshAnswers('all_vin');
+							chrome.runtime.sendMessage({callFunction: "refreshAnswers_allVin"}), (response) => { console.log(response); }; 
 					
 							$('.btn').addClass('disabled');
 					
@@ -286,7 +309,7 @@ $(function(){
 							break;
 						}
 
-						var tdAtualizar = '<td id="pro_ref_'+resposta.tab_id+'" class="text-center"><button id="btn-ref-answer-'+resposta.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
+						var tdAtualizar = '<td id="pro_ref_'+resposta.tab_id+'" class="text-center"><button id="btn-ref-answer-'+resposta.tab_id+'" class="btn btn-primary text-light btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
 						var tdOrigem    = '<td id="pro_origin_'+resposta.origin+'"><input id="res_origin_'+resposta.origin+'" class="form-control form-control-sm origem" type="text" value="'+resposta.origin+'" readonly></td>';
 						var tdStatus    = '<td id="pro_status_'+resposta.tab_id+'"><select id="res_status_'+resposta.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select></td>';
 						var tdSKU       = '<td id="pro_sku_'+resposta.tab_id+'"><input id="res_sku_'+resposta.tab_id+'" class="form-control form-control-sm sku" type="text" value="'+resposta.sku+'"></td>';
@@ -300,12 +323,12 @@ $(function(){
 
 						// No caso de resposta de pergunta múltipla, desabilita o select de templates
 						if(resposta.templates === false){
-							$("#pro_template_"+resposta.tab_id).html('<div style="margin: 0; padding: 0; width: 250px;" class="alert alert-dark text-center"><strong>Resposta de Múltipla!</strong></div>');
+							$("#pro_template_"+resposta.tab_id).html('<div style="margin: 0; padding: 0; width: 250px;" class="alert alert-dark text-center"><strong>Resposta de múltipla!</strong></div>');
 						}
 
 						$('#btn-ref-answer-'+resposta.tab_id).click(function(){
-							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba da resposta "'+resposta.title+'"?')){
-								chrome.extension.getBackgroundPage().refreshAnswers(resposta.tab_id);
+							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba da resposta "'+resposta.title+'"?')){
+								chrome.runtime.sendMessage({callFunction: "refreshAnswers_"+resposta.tab_id}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -356,7 +379,7 @@ $(function(){
 							break;
 						}
 
-						var tdAtualizar = '<td id="pro_ref_'+resposta.tab_id+'" class="text-center"><button id="btn-ref-answer-'+resposta.tab_id+'" class="btn btn-primary btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
+						var tdAtualizar = '<td id="pro_ref_'+resposta.tab_id+'" class="text-center"><button id="btn-ref-answer-'+resposta.tab_id+'" class="btn btn-primary text-light btn-sm rounded-1"><i class="fas fa-redo-alt"></i></button></td>';
 						var tdOrigem    = '<td id="pro_origin_'+resposta.origin+'"><input id="res_origin_'+resposta.origin+'" class="form-control form-control-sm origem" type="text" value="'+resposta.origin+'" readonly></td>';
 						var tdStatus    = '<td id="pro_status_'+resposta.tab_id+'"><select id="res_status_'+resposta.tab_id+'" class="form-select form-select-sm status">'+status_1+status_2+status_3+'</select></td>';
 						var tdCategoria = '<td id="pro_categorie_'+resposta.tab_id+'"><select id="res_categorie_'+resposta.tab_id+'" class="form-select form-select-sm categoria">'+resposta.categories+'</select></td>';
@@ -369,14 +392,14 @@ $(function(){
 
 						// No caso de resposta de pergunta múltipla, desabilita o select de templates
 						if(resposta.templates === false){
-							$("#pro_template_"+resposta.tab_id).html('<div style="margin: 0; padding: 0; width: 250px;" class="alert alert-dark text-center"><strong>Resposta de Múltipla!</strong></div>');
+							$("#pro_template_"+resposta.tab_id).html('<div style="margin: 0; padding: 0; width: 250px;" class="alert alert-dark text-center"><strong>Resposta de múltipla!</strong></div>');
 						}
 
 						$('#btn-ref-answer-'+resposta.tab_id).click(function(){
 							var modelo = document.getElementById('res_model_'+resposta.tab_id).selectedIndex + 1;
 							var modelo = document.querySelector("#res_model_"+resposta.tab_id+" > option:nth-child("+modelo+")").innerHTML;
-							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO ENVIADAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba da resposta "'+modelo+'"?')){
-								chrome.extension.getBackgroundPage().refreshAnswers(resposta.tab_id);
+							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba da resposta "'+modelo+'"?')){
+								chrome.runtime.sendMessage({callFunction: "refreshAnswers_"+resposta.tab_id}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -407,11 +430,6 @@ $(function(){
 					// Se não existir nenhum resposta aberto, desabilita os botões
 					$('.btn').addClass('disabled');
 					$('input[type="checkbox"]').prop('disabled', true);
-					$("#dashboard").addClass('text-center');
-					$("#dashboard").append('<p><strong>Nenhum registro encontrado ...</strong></p><div><button class="btn btn-primary" id="atualizar">Atualizar</button></div>');
-					$('#atualizar').click(function(){
-						window.location.reload();
-					});
 				}
 			});
 		}, 1000);
@@ -420,139 +438,13 @@ $(function(){
 /* ====================================== */
 
 
-/* FUNÇÃO PARA ENVIAR AS ALTERAÇÕES DAS RESPOSTAS PARA AS ABAS */
-
-	var newAnswer = [];
-	$('#send_answers').click(function(){
-
-		// Desabilida os botões pros abestado não fazer cagada (Para garantir que quando forem habilitados novamente, as informações tenham sido enviadas)
-		$('.btn').addClass('disabled');
-
-		newAnswer = [];
-		chrome.storage.local.get('respostas', function(data){
-			var respostas = data.respostas;
-
-			// Coleta todas as informações da lista (tabela)
-			if(respostas){
-
-				var res_individuais = [];
-				var res_vinculadas = [];
-
-				respostas.forEach(function(resposta){
-					if(resposta.title){
-						res_individuais.push(resposta);
-					}
-					if(resposta.models){
-						res_vinculadas.push(resposta);
-					}
-				});
-
-				res_individuais.forEach(function(resposta){
-
-					if(document.getElementById('res_template_'+resposta.tab_id)){
-						var addAnswer = {
-							tab_id: resposta.tab_id,
-							sku: document.getElementById('res_sku_'+resposta.tab_id).value,
-							status: document.getElementById('res_status_'+resposta.tab_id).value,
-							title: document.getElementById('res_title_'+resposta.tab_id).value,
-							description: document.getElementById('res_description_'+resposta.tab_id).value,
-							price: document.getElementById('res_price_'+resposta.tab_id).value,
-							show_price: document.getElementById('res_show_price_'+resposta.tab_id).value,
-							template: document.getElementById('res_template_'+resposta.tab_id).selectedIndex
-						}
-					}else{
-						var addAnswer = {
-							tab_id: resposta.tab_id,
-							sku: document.getElementById('res_sku_'+resposta.tab_id).value,
-							status: document.getElementById('res_status_'+resposta.tab_id).value,
-							title: document.getElementById('res_title_'+resposta.tab_id).value,
-							description: document.getElementById('res_description_'+resposta.tab_id).value,
-							price: document.getElementById('res_price_'+resposta.tab_id).value,
-							show_price: document.getElementById('res_show_price_'+resposta.tab_id).value,
-							template: false
-						}
-					}
-
-					console.log(addAnswer);
-
-					newAnswer.push(addAnswer);
-				});
-
-				res_vinculadas.forEach(function(resposta){
-
-					if(document.getElementById('res_template_'+resposta.tab_id)){
-						var addAnswer = {
-							tab_id: resposta.tab_id,
-							status: document.getElementById('res_status_'+resposta.tab_id).value,
-							categorie: document.getElementById('res_categorie_'+resposta.tab_id).selectedIndex,
-							model: document.getElementById('res_model_'+resposta.tab_id).selectedIndex,
-							price: document.getElementById('res_price_'+resposta.tab_id).selectedIndex,
-							show_price: document.getElementById('res_show_price_'+resposta.tab_id).value,
-							template: document.getElementById('res_template_'+resposta.tab_id).selectedIndex
-						}
-					}else{
-						var addAnswer = {
-							tab_id: resposta.tab_id,
-							status: document.getElementById('res_status_'+resposta.tab_id).value,
-							categorie: document.getElementById('res_categorie_'+resposta.tab_id).selectedIndex,
-							model: document.getElementById('res_model_'+resposta.tab_id).selectedIndex,
-							price: document.getElementById('res_price_'+resposta.tab_id).selectedIndex,
-							show_price: document.getElementById('res_show_price_'+resposta.tab_id).value,
-							template: false
-						}
-					}
-
-					console.log(addAnswer);
-
-					newAnswer.push(addAnswer);
-				});
-			}else{
-				console.log(respostas);
-			}
-
-			// Seta o novo array "respostas", com as informações do array antigo alteradas pelo usuário
-			console.log(newAnswer);
-			chrome.storage.local.set({'respostas': newAnswer});
-
-			// Conta as abas denovo pra poder comparar na hora de enviar
-			chrome.extension.getBackgroundPage().countTabs();
-		});
-
-		// Envia as informações do novo array para as abas
-		setTimeout(function(){
-			chrome.storage.local.get('answer_tabs', function(tabs){
-				chrome.storage.local.get('respostas', function(data){
-					console.log('Quantidade de Abas: ' + tabs.answer_tabs);
-					console.log('Quantidade de Respostas: ' + data.respostas.length);
-	                if(tabs.answer_tabs == data.respostas.length){
-	                	console.log('Quantidade válida');
-						chrome.extension.getBackgroundPage().sendAnswers();
-
-
-						// Habilita novamente os botões
-						setTimeout(function(){
-							alert("Alterações enviadas com sucesso! *(Ainda precisam ser salvas!)*\n- Finalizado em " + (tabs.answer_tabs * 100)/1000 + " segundos");
-							window.location.reload();
-						}, tabs.model_tabs * 100);
-	                }else{
-	                	alert('A quantidade de abas abertas para editar os respostas não é igual a quantidade da lista!');
-						$('.btn').removeClass('disabled');
-	                }
-            	});
-            });
-		}, 1000);
-	});
-
-/* ====================================== */
-
-
 
 /* FUNÇÃO PARA SALVAR TODOS OS RESPOSTAS ABERTOS NAS ABAS */
 
 	$('#save_answers').click(function(){
-		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM ENVIADAS ANTES DE SALVAR!*\n\nDeseja mesmo salvar todos as respostas?")){
+		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n\nDeseja mesmo salvar todos as respostas?")){
 			$('.btn').addClass('disabled');
-			chrome.extension.getBackgroundPage().saveAnswers();
+			chrome.runtime.sendMessage({callFunction: "saveAnswers"}, (response) => { console.log(response); });
 			setTimeout(function(){
 				$('.btn').removeClass('disabled');
 			}, 1200);
@@ -565,8 +457,10 @@ $(function(){
 
 /* FUNÇÃO PARA FECHAR TODOS OS RESPOSTAS ABERTOS NAS ABAS */
 
-	$('#close_answer').click(function(){
-		chrome.extension.getBackgroundPage().closeTabAnswer();
+	$('#close_answers').click(function(){
+		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM SALVAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todas as respostas?")){
+			chrome.runtime.sendMessage({callFunction: "closeTabAnswer"}, (response) => { console.log(response); });
+		}
 	});
 
 /* ====================================== */

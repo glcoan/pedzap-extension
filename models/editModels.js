@@ -14,15 +14,8 @@ $(function(){
 
 	// Quando o dom carrega essa função é chamada para listar os modelos
 	$(document).ready(function(){
-		chrome.runtime.sendMessage({callFunction: "countTabs"});
+		chrome.runtime.sendMessage({callFunction: "countTabs"}, (response) => { console.log(response); });
 		listModels();
-	});
-
-	// Atualiza listagem de modelos e marca todos os checkbox das propriedades listadas
-	$('#bt_refresh_page').click(function(){
-		if(confirm("Você PERDERÁ todas as alterações caso não tenha salvo ou enviado para as abas! Deseja mesmo atualizar?")){
-			window.location.reload();
-		}
 	});
 
 	// Timeout de 1 segundo para dar tempo de carregar os registros e aplicar essas alterações
@@ -37,7 +30,7 @@ $(function(){
 				id: this.id,
 				value: this.value
 			}
-			chrome.runtime.sendMessage({model: model});
+			chrome.runtime.sendMessage({model: model}, (response) => { console.log(response); });
 		});
 		
 		// Coloca borda valores 0 e 1 para preços e máximos + borda verde
@@ -73,7 +66,7 @@ $(function(){
 				modelos = JSON.stringify(modelos);
 				console.log("Array-1 = "+modelos);
 				array1.push(modelos);
-				chrome.runtime.sendMessage({callFunction: "editModels"});
+				chrome.runtime.sendMessage({callFunction: "editModels"}, (response) => { console.log(response); });
 			}
 		});
 
@@ -124,20 +117,17 @@ $(function(){
 	function listModels(){
 
 		// Coleta todas as informações dos modelos abertos e armazena no storage
-		chrome.runtime.sendMessage({callFunction: "editModels"});
+		chrome.runtime.sendMessage({callFunction: "editModels"}, (response) => { console.log(response); });
 
 		// Exibe o spinner enquanto o setTimeout abaixo não é executado
 		$("body").css({'overflow-y': 'hidden'});
 		$("#list_models").html('');
-		$("#dashboard").hide();
 		$("#loading-1").html('<div id="spinner" class="spinner-border text-success" style="width: 80px; height: 80px;" role="status"><span class="visually-hidden">Loading...</span></div>');
-
 
 		// setTimeout para dar tempo de coletar todos os dados das abas de modelos
 		setTimeout(function(){
 			// Remove o spinner para listar os modelos
 			$("#spinner").hide();
-			$("#dashboard").show();
 			$("body").css({'overflow-y': 'auto'});
 
 			// Pega o array de informações dos modelos armazenado no storage
@@ -146,7 +136,6 @@ $(function(){
 
 				// If para não gerar erro caso não tenha nenhum modelo aberto
 				if(modelos){
-					$('#send_models').removeClass('disabled');
 					if(modelos.length == 1){
 						$('#qtde_modelos').html(modelos.length);
 					}else{
@@ -169,7 +158,7 @@ $(function(){
 					// botão para atualizar página do modelo
 					$('#refresh_models').click(function(){
 						if(confirm('*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n*TODAS AS ALTERAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar todas as páginas "Editar Modelos"?')){
-							chrome.runtime.sendMessage({callFunction: "refreshModels"});
+							chrome.runtime.sendMessage({callFunction: "refreshModels"}, (response) => { console.log(response); });
 					
 							$('.btn').addClass('disabled');
 					
@@ -191,7 +180,7 @@ $(function(){
 						$("#tr_head").append('<th scope="col" class="novo-preco prop-modelo-ext"><a href="#" id="btn-add-preco-all" class="btn btn-success rounded-1 text-light"><i class="fas fa-plus"></i></a></th>');
 						$("#btn-add-preco-all").click(function(){
 							if(confirm("Deseja mesmo adicionar um novo campo de preço para todos os modelos?")){
-								chrome.runtime.sendMessage({callFunction: "addPriceModels"});
+								chrome.runtime.sendMessage({callFunction: "addPriceModels"}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -203,7 +192,7 @@ $(function(){
 						$("#tr_head").append('<th scope="col" class="exclui-preco prop-modelo-ext"><a href="#" id="btn-remove-preco-all" class="btn btn-danger rounded-1"><i class="fas fa-minus"></i></a></th></tr>');
 						$("#btn-remove-preco-all").click(function(){
 							if(confirm("Deseja mesmo remover o último preço de todos os modelos?")){
-								chrome.runtime.sendMessage({callFunction: "removePriceModels"});
+								chrome.runtime.sendMessage({callFunction: "removePriceModels"}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -273,7 +262,7 @@ $(function(){
 
 						$('#btn-ref-model-'+modelo.tab_id).click(function(){
 							if(confirm('*A PÁGINA SERÁ ATUALIZADA E AS INFORMAÇÕES NÃO SALVAS SERÃO PERDIDAS!*\n\nDeseja mesmo atualizar a aba do modelo "'+modelo.title+'"?')){
-								chrome.runtime.sendMessage({callFunction: "refreshModels_"+modelo.tab_id});
+								chrome.runtime.sendMessage({callFunction: "refreshModels_"+modelo.tab_id}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -305,7 +294,7 @@ $(function(){
 							// Botão para adicionar preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_add_'+modelo.tab_id+'" class="text-center"><button id="btn-add-preco-'+modelo.tab_id+'" class="btn btn-success btn-sm rounded-1 text-light"><i class="fas fa-plus"></i></button></td>');
 							$('#btn-add-preco-'+modelo.tab_id).click(function(){
-								chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id});
+								chrome.runtime.sendMessage({callFunction: "addPriceModels_"+modelo.tab_id}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -315,7 +304,7 @@ $(function(){
 							// Botão para remover preço individualmente
 							$('#'+modelo.tab_id).append('<td id="pro_remove_'+modelo.tab_id+'" class="text-center"><button id="btn-remove-preco-'+modelo.tab_id+'" class="btn btn-danger btn-sm rounded-1"><i class="fas fa-minus"></i></button></td>');
 							$('#btn-remove-preco-'+modelo.tab_id).click(function(){
-								chrome.runtime.sendMessage({callFunction: "removePriceModels_"+modelo.tab_id});
+								chrome.runtime.sendMessage({callFunction: "removePriceModels_"+modelo.tab_id}, (response) => { console.log(response); });
 								$('.btn').addClass('disabled');
 								setTimeout(function(){
 									window.location.reload();
@@ -338,11 +327,6 @@ $(function(){
 					// Se não existir nenhum modelo aberto, desabilita os botões
 					$('.btn').addClass('disabled');
 					$('input[type="checkbox"]').prop('disabled', true);
-					$("#dashboard").addClass('text-center');
-					$("#dashboard").append('<p><strong>Nenhum registro encontrado ...</strong></p><div><button class="btn btn-primary" id="atualizar">Atualizar</button></div>');
-					$('#atualizar').click(function(){
-						window.location.reload();
-					});
 				}
 			});
 		}, 1000);
@@ -357,7 +341,7 @@ $(function(){
 	$('#save_models').click(function(){
 		if(confirm("*ISSO PODE TRAVAR O NAVEGADOR POR UM TEMPO EM CASO DE MUITAS ABAS!*\n\nDeseja mesmo salvar todos os modelos?")){
 			$('.btn').addClass('disabled');
-			chrome.runtime.sendMessage({callFunction: "saveModels"});
+			chrome.runtime.sendMessage({callFunction: "saveModels"}, (response) => { console.log(response); });
 			setTimeout(function(){
 				$('.btn').removeClass('disabled');
 			}, 3000);
@@ -372,7 +356,7 @@ $(function(){
 
 	$('#close_models').click(function(){
 		if(confirm("*CERTIFIQUE-SE QUE AS INFORMAÇÕES FORAM SALVAS ANTES DE FECHAR!*\n\nDeseja mesmo fechar todos os modelos?")){
-			chrome.runtime.sendMessage({callFunction: "closeTabModel"});
+			chrome.runtime.sendMessage({callFunction: "closeTabModel"}, (response) => { console.log(response); });
 		}
 	});
 

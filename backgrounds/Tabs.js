@@ -1,10 +1,6 @@
-import { 
-	urlEditarGrupos,
+import {
 	urlEditarItens,
-	urlEditarCategorias,
 	urlEditarModelos,
-	urlEditarTemplates,
-	urlEditarPerguntas,
 	urlEditarRespostas
 } from "../background.js";
 
@@ -52,17 +48,6 @@ export function countTabs(){
 
 // ---------- FECHAR ABAS ----------
 
-export function closeTabGroup(){
-	chrome.tabs.query({}, function(tabs){
-		tabs.forEach(function(tab){
-			let id = tab.id;
-			if(tab.url.includes(urlEditarGrupos)){
-				chrome.tabs.remove(id);
-			}
-		});
-	});
-}
-
 export function closeTabItem(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
@@ -74,44 +59,11 @@ export function closeTabItem(){
 	});
 }
 
-export function closeTabCategory(){
-	chrome.tabs.query({}, function(tabs){
-		tabs.forEach(function(tab){
-			let id = tab.id;
-			if(tab.url.includes(urlEditarCategorias)){
-				chrome.tabs.remove(id);
-			}
-		});
-	});
-}
-
 export function closeTabModel(){
 	chrome.tabs.query({}, function(tabs){
 		tabs.forEach(function(tab){
 			let id = tab.id;
 			if(tab.url.includes(urlEditarModelos)){
-				chrome.tabs.remove(id);
-			}
-		});
-	});
-}
-
-export function closeTabTemplate(){
-	chrome.tabs.query({}, function(tabs){
-		tabs.forEach(function(tab){
-			let id = tab.id;
-			if(tab.url.includes(urlEditarTemplates)){
-				chrome.tabs.remove(id);
-			}
-		});
-	});
-}
-
-export function closeTabQuestion(){
-	chrome.tabs.query({}, function(tabs){
-		tabs.forEach(function(tab){
-			let id = tab.id;
-			if(tab.url.includes(urlEditarPerguntas)){
 				chrome.tabs.remove(id);
 			}
 		});

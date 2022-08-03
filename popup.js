@@ -1,12 +1,58 @@
 $(()=>{
 
+/* BOTÃO "ALTERAR MODELOS" */
+
+	$('#alterar_modelos').click(()=>{
+		const indexModelo 		= document.getElementsByName('indexModelo');
+		const indexModeloCheck 	= document.getElementsByName('indexModeloCheck');
+		const indexPreco 		= document.getElementsByName('indexPreco');
+		const indexPrecoCheck 	= document.getElementsByName('indexPrecoCheck');
+	
+		if(confirm("Deseja mesmo fazer essa alteração?")){
+			// Valida se não teve nenhum selecionado
+			if(!indexPrecoCheck[0].checked && !indexModeloCheck[0].checked) {
+				alert("Você precisa selecionar pelo menos um index para alterar");
+				return false;
+			}
+
+			/**
+			 * Atualiza modelo
+			 */
+			if(indexModeloCheck[0].checked) {
+				if (indexModelo[0].value.length === 0) {
+					alert("Você esqueceu de selecionar o início do modelo");
+					return false;
+				}
+				chrome.runtime.sendMessage({callFunction: "updateModel_"+indexModelo[0].value}, (response) => { console.log(response); });
+			}
+	
+			/**
+			 * Atualiza só preços
+			 * Tem um timeout de 3 segundos para dar tempo de carregar os preços do modelo que são carregados via ajax pelo painel.
+			 */
+			setTimeout(function(){
+				if(indexPrecoCheck[0].checked){
+					if(indexPreco[0].value.length === 0){
+						alert("Você esqueceu de selecionar o index do preço");
+						return false;
+					}
+					chrome.runtime.sendMessage({callFunction: "updatePrice_"+indexPreco[0].value}, (response) => { console.log(response); });
+				}
+			}, 3000);
+		}
+	});
+
+/* ====================================== */
+
+
+
 /* CHAMADA DO BOTÃO "AUTOMATIZAR" DO POPUP */
 
 	// A API de storage usada na função de contar abas tem um pequeno delay, por isso os setTimeout's abaixo, para dar tempo de armazenar a quantidade de abas
 
 	function showInfoAutomateTab() {
 		// Conta as abas e as classifica
-		chrome.runtime.sendMessage({callFunction: "countTabs"});
+		chrome.runtime.sendMessage({callFunction: "countTabs"}, (response) => { console.log(response); });
 		
 		// Exibe os botões de itens de acordo com o resultado obtido pela função countTabs
 		setTimeout(()=>{
@@ -68,7 +114,7 @@ $(()=>{
 
 
 
-/* BOTÕES DA ABA AUTOMATIZAR (POPUP) */
+/* BOTÕES DO POPUP */
 
 	// Esconde as sections de helpers e automatizar para exibir sempre o auto cardápio primeiro
 	$("#helpers").hide();
@@ -104,7 +150,7 @@ $(()=>{
 		setTimeout(()=>{
 			window.close();
 		}, 100);
-        chrome.runtime.sendMessage({callFunction: "countTabs"});
+        chrome.runtime.sendMessage({callFunction: "countTabs"}, (response) => { console.log(response); });
 		switch (page) {
 			case "modelos":
 				window.open('models/editModels.html');
@@ -130,17 +176,17 @@ $(()=>{
 
 	$('#close_model').click(()=>{
 		if(confirm("Deseja fechar todas as abas de MODELOS?")){
-			chrome.runtime.sendMessage({callFunction: "closeTabModel"})
+			chrome.runtime.sendMessage({callFunction: "closeTabModel"}, (response) => { console.log(response); });
 		}
 	});
 	$('#close_item').click(()=>{
 		if(confirm("Deseja fechar todas as abas de ITENS?")){
-			chrome.runtime.sendMessage({callFunction: "closeTabItem"})
+			chrome.runtime.sendMessage({callFunction: "closeTabItem"}, (response) => { console.log(response); });
 		}
 	});
 	$('#close_answer').click(()=>{
 		if(confirm("Deseja fechar todas as abas de RESPOSTAS?")){
-			chrome.runtime.sendMessage({callFunction: "closeTabAnswer"})
+			chrome.runtime.sendMessage({callFunction: "closeTabAnswer"}, (response) => { console.log(response); });
 		}
 	});
 

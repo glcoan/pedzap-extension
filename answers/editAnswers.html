@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 	<head>
-		<title>Pedzap Plugin</title>
+		<title>Editar Respostas</title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,142 +10,153 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
 	</head>
 	<body class="lista_respostas">
-		<header>
-			<section>
-				<nav class="row bg-gradient bg-success">
-					<div class="p-2 col-2 d-flex justify-content-center align-items-center">
-						<a href="../popup.html" class="btn btn-success border border-1 btn-sm"><i class="fas fa-arrow-left"></i></a>
-					</div>
-
-					<h2 class="col-8 text-light d-flex justify-content-center align-items-center">Editar Respostas</h2>
-
-					<div class="p-2 col-2 d-flex justify-content-center align-items-center">
-						<a id="bt_refresh_page" class="btn btn-success border border-1 btn-sm"><i class="fas fa-redo-alt"></i></a>
-					</div>
-
-					<div class="p-2 col-12 bg-secondary d-flex justify-content-center text-secondary"></div>
-
-				</nav>
-			</section>
+		<header class="container-fluid bg-success text-light text-center fs-6">
+			<nav class="row">
+				<div id="tab-1" class="col-6 tab p-1">
+					<i class="fas fa-bars"></i> LISTA RESPOSTAS - <strong id="qtde_respostas">0</strong>
+					<div id="tab-slide-1" class="tab-slide bg-light rounded"></div>
+				</div>
+				<div id="tab-2" class="col-6 tab p-1">
+					<i class="fas fa-th"></i> PROPRIEDADES
+					<div id="tab-slide-2" class="tab-slide bg-light rounded invisible"></div>
+				</div>
+			</nav>
 		</header>
-		<main>
-			<section id="dashboard" class="row justify-content-center">
-				<div class="col-12 d-flex justify-content-center">
-					<div style="margin-top: 5px; padding: 0px 10px 0px 10px; width: 80%; min-width: 430px;" class="alert alert-warning text-center border border-warning" role="alert">
-						<strong>Não feche</strong> as abas de editação de resposta, elas são <strong>fundamentais</strong> para o <strong>funcionamento</strong> da extensão caso seja feita alguma <strong>alteração</strong> através da lista abaixo!
-					</div>
-				</div>
-				<div style="width: 95%" class="col-12 d-flex justify-content-between">
-					<div class="card border-dark mb-3 cartao-propriedades-2">
-						<div class="card-header">
-							<i class="fas fa-th-list"></i> Propriedades Listadas
-							<a href="#" class="link-success float-end" id="btn_pro_all"><i class="far fa-check-square"></i></a>
+		<main class="container-fluid">
+			<div class="row slider">
+				<section id="section-slide-1" class="col-12">
+					<div class="row justify-content-evenly text-light text-center">
+						<button class="col-3 btn btn-sm btn-primary mt-3 mb-3 text-light" id="save_answers"><i class="fas fa-save"></i> SALVAR TODOS</button>
+						<button class="col-3 btn btn-sm btn-danger mt-3 mb-3" id="close_answers"><i class="fas fa-times"></i> FECHAR TODOS</button>
+						<div class="col-12 justify-content-center bg-light">
+							<div id="tipo_ind" style="margin-bottom: 0px; padding: 0px 10px 0px 10px;" class="bg-gradient bg-success text-center text-light">
+								<h5 class="d-inline">Respostas de tipo individual </h5>
+							</div>
+							<div id="list_answers_ind" class="table-responsive mb-3">
+								
+							</div>
+							<div id="tipo_vin" style="margin-bottom: 0px; padding: 0px 10px 0px 10px;" class="bg-gradient bg-success text-center text-light">
+								<h5 class="d-inline">Respostas de tipo vinculada </h5>
+							</div>
+							<div class="alert alert-warning text-center" id="warning"
+								style="margin: 5px 0px; padding: 0px 10px 0px 10px; border-radius: 0px; display: none;">
+								Atualize a página para desbloquear os campos
+							</div>
+							<div id="list_answers_vin" class="table-responsive">
+								
+							</div>
 						</div>
-						<div class="card-body">
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_status" checked>
-								<label class="form-check-label" for="btn_pro_status">Status</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_origem" checked>
-								<label class="form-check-label" for="btn_pro_origem">Origem</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_sku" checked>
-								<label class="form-check-label" for="btn_pro_sku">SKU</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_titulo" checked>
-								<label class="form-check-label" for="btn_pro_titulo">Título</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_categoria" checked>
-								<label class="form-check-label" for="btn_pro_categoria">Categoria</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_refresh" checked>
-								<label class="form-check-label" for="btn_pro_refresh"><i class="fas fa-redo-alt"></i></label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_modelo" checked>
-								<label class="form-check-label" for="btn_pro_modelo">Modelo</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_preco" checked>
-								<label class="form-check-label" for="btn_pro_preco">Preço</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_descricao" checked>
-								<label class="form-check-label" for="btn_pro_descricao">Descrição</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_show_price" checked>
-								<label class="form-check-label" for="btn_pro_show_price">Exibir Preço</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" id="btn_pro_template" checked>
-								<label class="form-check-label" for="btn_pro_template">Template</label>
+						<div class="text-center">
+							<div id="loading-1" class="d-flex justify-content-center">
+								
 							</div>
 						</div>
 					</div>
-					<div id="loading-2">
-						<div class="spinner-border text-success" style="width: 60px; height: 60px;">
-							<span class="visually-hidden">Loading...</span>
-						</div>
-						<br><br>
-						<span class="text-success">Aguarde...</span>
-					</div>
-					<div class="card border-dark mb-3 cartao-abas-2">
-						<div class="card-header">
-							<i class="fas fa-folder"></i> Abas Abertas
-							<strong class="text-primary"><label id="qtde_respostas">(0 respostas)</label></strong>
-							<a href="#" class="link-danger float-end" id="close_answer"><i class="fas fa-times"></i></a>
-						</div>
-						<div class="card-body">
-							<div class="row text-center">
-								<div class="col-6">
-									<button class="btn btn-primary btn-sm" id="send_answers"><i class="fa fa-paper-plane"></i></button>
-									<label for="send_answers">Enviar</label>
-								</div>
-								<div class="col-6">
-									<button class="btn btn-primary btn-sm" id="save_answers"><i class="fas fa-save"></i></button>
-									<label for="save_answers">Salvar</label>
+				</section>
+				<section id="section-slide-2" class="col-12 invisible">
+					<div class="container-fluid" style="min-width: 736px;">
+						<div class="row bg-light p-4 mt-5 d-flex justify-content-start align-items-end">
+							<div id="btn_pro_refresh" class="card p-2 props-btn-actived" style="width: 5%;">
+								<div class="py-1 d-flex justify-content-center align-items-center">
+									<i class="fas fa-sync-alt"></i>
 								</div>
 							</div>
 						</div>
-						<div class="card-footer text-muted text-center">
-							<label id="warning">Primeiro envie, depois salve.</label>
+						<div id="btn_pro_origem" class="card p-2 props-actived mt-4 mb-4" style="width: 32%;">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>Origem</div>
+								<i class="fas fa-check"></i>
+							</div>
+						</div>
+						<div class="row bg-light p-4">
+							<div class="col-12 card p-2 props-none">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Formato de pergunta</div>
+									<i class="fas fa-info"></i>
+								</div>
+							</div>
+							<div id="btn_pro_status" class="card p-2 props-actived mt-4" style="width: 49%; margin-right: 2%;">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Status</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div class="card p-2 props-none mt-4" style="width: 49%;">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Data Cadastral</div>
+									<i class="fas fa-info"></i>
+								</div>
+							</div>
+							<div class="col-12 card p-2 props-none mt-4">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Tipo</div>
+									<i class="fas fa-info"></i>
+								</div>
+							</div>
+							<div id="btn_pro_categoria" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Categoria</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div id="btn_pro_modelo" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Modelo</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div id="btn_pro_sku" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>SKU</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div id="btn_pro_titulo" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Título</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div id="btn_pro_descricao" class="col-12 card py-5 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Descrição</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+
+							<div id="btn_pro_preco" class="card p-2 props-actived mt-4" style="width: 49%; margin-right: 2%;">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Preço</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div class="card p-2 props-none mt-4" style="width: 49%;">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Máximo</div>
+									<i class="fas fa-info"></i>
+								</div>
+							</div>
+
+							<div id="btn_pro_show_price" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Exibir preço</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
+							<div id="btn_pro_template" class="col-12 card p-2 mt-4 props-actived">
+								<div class="d-flex justify-content-between align-items-center">
+									<div>Template</div>
+									<i class="fas fa-check"></i>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</section>
-			<section class="row">
-				<div class="col-12 justify-content-center bg-light">
-					<div id="tipo_ind" style="margin-bottom: 0px; padding: 0px 10px 0px 10px;" class="bg-gradient bg-success text-center text-light">
-						<h5 class="d-inline">Respostas Individuais </h5>
-						<i class="fas fa-arrow-alt-circle-down"></i>
-					</div>
-					<div id="list_answers_ind" class="table-responsive">
-						
-					</div>
-					<div id="tipo_vin" style="margin-bottom: 0px; padding: 0px 10px; display: none;" class="bg-gradient bg-success text-center text-light">
-						<h5 class="d-inline">Respostas Vinculadas </h5>
-						<i class="fas fa-arrow-alt-circle-down"></i>
-					</div>
-					<div id="list_answers_vin" class="table-responsive">
-						
-					</div>
-				</div>
-				<div class="text-center">
-					<div id="loading-1" class="d-flex justify-content-center">
-						
-					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 		</main>
 		<script src="../vendor/jquery-3.5.1.min.js"></script>
 		<script src="properties.js"></script>
-		<script src="editAnswers.js"></script>
+		<script src="editAnswers.js" type="module"></script>
 		<script src="../vendor/bootstrap.js"></script>
 	</body>
 </html>

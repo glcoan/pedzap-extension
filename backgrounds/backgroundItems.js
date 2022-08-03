@@ -119,7 +119,8 @@ export function editItems(){
 							spacing: document.getElementById("ite_espacamentos").value
 						}
 
-						chrome.runtime.sendMessage({newItem: newItem});
+						chrome.runtime.sendMessage({newItem: newItem}, (response) => { console.log(response); });
+						document.querySelector("#form").onchange = () => {chrome.runtime.sendMessage({refreshExtensionTabs: true}, (response) => { console.log(response); })}
 					},
 					args: [id]
 				});
@@ -138,7 +139,6 @@ export function sendItem(propertie, value, priceIndex){
 		}
 		if(type == "select"){
 			if(propertie == "template"){
-				console.log(value - 3);
 				switch(value){
 					case 0:
 						document.querySelector("#tem_id").selectedIndex = 0;

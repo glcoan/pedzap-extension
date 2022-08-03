@@ -59,7 +59,6 @@ if(urlEstab || urlAdmin){
 
 /* FIXA NO TOPO O BOTÃO DE ADICIONAR NA ABA DE ENTREGADA PÁGINA DE CONFIGURAÇÕES DO ESTABELECIMENTO  */
 
-
 function adjustAddButton(){
 	if(editConfigs){
 		const searchElement = setInterval(()=>{
@@ -80,7 +79,7 @@ function adjustAddButton(){
 /* ====================================== */
 
 
-
+ 
 // TODOS OS ESTILOS DO TEMA ESCURO
 
 function setDarkMode() {
