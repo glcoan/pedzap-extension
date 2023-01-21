@@ -34,17 +34,24 @@ export function editModels(){
 							title: document.getElementById("mod_titulo").value,
 							description: document.getElementById("mod_descricao").value,
 							prices: [],
+							minimum: [],
 							maximum: []
 						}
 
 						var mod_precos = Array.from(document.querySelectorAll("[data-mask='decimal'"));
+						var mod_minimos = Array.from(document.querySelectorAll("[data-mask='inteiro'"));
 						var mod_maximos = Array.from(document.querySelectorAll("[data-mask='inteiro'"));
 
-						// Remove o primeiro registro dos arrays
+						// Remove o primeiro registro do array
 						mod_precos.shift();
-						mod_maximos.shift();
+
+						// Remove o primeiro e segudo registro do array
+						mod_minimos.splice(0, 2);
+						mod_maximos.splice(0, 2);
+
 						// Remove o último registro dos arrays
 						mod_precos.pop();
+						mod_minimos.pop();
 						mod_maximos.pop();
 
 						mod_precos.forEach(function(element){
@@ -56,12 +63,27 @@ export function editModels(){
 							}
 						});
 
+						mod_minimos.forEach(function(element){
+							let elementPosition = mod_minimos.indexOf(element) % 2;
+							if(elementPosition == 0){
+								var valor = element.getAttribute("value");
+								if(valor){
+									newModel.minimum.push(valor);
+								}else{
+									newModel.minimum.push('');
+								}
+							}
+						});
+
 						mod_maximos.forEach(function(element){
-							var valor = element.getAttribute("value");
-							if(valor){
-								newModel.maximum.push(valor);
-							}else{
-								newModel.maximum.push('');
+							let elementPosition = mod_minimos.indexOf(element) % 2;
+							if(elementPosition != 0){
+								var valor = element.getAttribute("value");
+								if(valor){
+									newModel.maximum.push(valor);
+								}else{
+									newModel.maximum.push('');
+								}
 							}
 						});
 
@@ -87,15 +109,27 @@ export function sendModel(propertie, value, priceIndex){
 			input.selectedIndex = value;
 			input.dispatchEvent(new Event('change'));
 		}
-		if(type == "decimal" || type == "inteiro"){
-			var array = Array.from(document.querySelectorAll("[data-mask="+type+""));
+		if(type == "decimal"){
+			var array = Array.from(document.querySelectorAll("[data-mask=decimal"));
 			array.shift();
 			array.pop();
 			array[priceIndex].value = value;
 			array[priceIndex].dispatchEvent(new Event('input'));
 		}
+		if(type == "inteiro-min"){
+			var array = Array.from(document.querySelectorAll(".pre_minimo"));
+			array.shift();
+			array[priceIndex].value = value;
+			array[priceIndex].dispatchEvent(new Event('input'));
+		}
+		if(type == "inteiro-max"){
+			var array = Array.from(document.querySelectorAll(".pre_maximo"));
+			array.shift();
+			array[priceIndex].value = value;
+			array[priceIndex].dispatchEvent(new Event('input'));
+		}
 	}
-	
+
 	switch (propertie) {
 		case 'title':
 			changeInput("mod_titulo", "input", value);
@@ -112,8 +146,11 @@ export function sendModel(propertie, value, priceIndex){
 		case 'price':
 			changeInput("", "decimal", value, priceIndex);
 			break;
+		case 'minimum':
+			changeInput("", "inteiro-min", value, priceIndex);
+			break;
 		case 'maximum':
-			changeInput("", "inteiro", value, priceIndex);
+			changeInput("", "inteiro-max", value, priceIndex);
 			break;
 	}
 

@@ -71,6 +71,16 @@ $(function(){
         }
     });
     
+    chrome.storage.local.get('pro_minimum_mod', function(data){
+        if(data.pro_maximum_mod == 'hide'){
+            setTimeout(function(){
+                changePropStatus(false, 'btn_pro_min', true);
+                $("th.minimo.prop-modelo-ext").hide();
+                $("[id^='pro_minimum']").hide();
+            }, 1050);
+        }
+    });
+
     chrome.storage.local.get('pro_maximum_mod', function(data){
         if(data.pro_maximum_mod == 'hide'){
             setTimeout(function(){

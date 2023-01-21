@@ -150,7 +150,7 @@ input.t-preco, th.t-preco{
 	min-width: 70px;
 	width: 70px;
 }
-input.maximo, th.maximo{
+input.maximo, th.maximo, th.minimo, input.minimo{
 	min-width: 40px;
 	width: 40px;
 }

@@ -35,6 +35,7 @@ $(function(){
 		
 		// Coloca borda valores 0 e 1 para preços e máximos + borda verde
 		var mod_precos = Array.from(document.querySelectorAll("[id^='mod_price_'"));
+		var mod_minimos = Array.from(document.querySelectorAll("[id^='mod_minimum_'"));
 		var mod_maximos = Array.from(document.querySelectorAll("[id^='mod_maximum_'"));
 		mod_precos.forEach(function(preco){
 			if(preco.value == '' && preco.disabled == false){
@@ -42,6 +43,14 @@ $(function(){
 				$('#'+preco.id).addClass('border-success');
 			}
 		});
+
+		mod_minimos.forEach(function(minimo){
+			if(minimo.value == '' && minimo.disabled == false){
+				minimo.value = 1;
+				$('#'+minimo.id).addClass('border-success');
+			}
+		});
+
 		mod_maximos.forEach(function(maximo){
 			if(maximo.value == '' && maximo.disabled == false){
 				maximo.value = 1;
@@ -173,6 +182,7 @@ $(function(){
 						console.log('Máximo de preços em um modelo: ' + qtde.max_pre);
 						for(var i = 1; i <= qtde.max_pre; i++){
 							$("#tr_head").append('<th scope="col" class="preco prop-modelo-ext">Preço</th>');
+							$("#tr_head").append('<th scope="col" class="minimo prop-modelo-ext">Min</th>');
 							$("#tr_head").append('<th scope="col" class="maximo prop-modelo-ext">Max</th>');
 						}
 
@@ -280,6 +290,7 @@ $(function(){
 							// Exibe os preços e máximos com base na quantidade obtida
 							for(var i = 0; i < prices; i++){
 								$('#'+modelo.tab_id).append('<td id="pro_price_'+i+'_'+modelo.tab_id+'"><input id="mod_price_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco" type="text" value="'+modelo.prices[i]+'"></td>');
+								$('#'+modelo.tab_id).append('<td id="pro_minimum_'+i+'_'+modelo.tab_id+'"><input id="mod_minimum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm minimo" type="text" value="'+modelo.minimum[i]+'"></td>');
 								$('#'+modelo.tab_id).append('<td id="pro_maximum_'+i+'_'+modelo.tab_id+'"><input id="mod_maximum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm maximo" type="text" value="'+modelo.maximum[i]+'"></td>');
 							}
 
@@ -287,6 +298,7 @@ $(function(){
 							if(prices < qtde.max_pre){
 								for(var i = prices; i < qtde.max_pre; i++){
 									$('#'+modelo.tab_id).append('<td id="pro_price_'+i+'_'+modelo.tab_id+'"><input id="mod_price_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco border-danger" type="text" value="" disabled></td>');
+									$('#'+modelo.tab_id).append('<td id="pro_minimum_'+i+'_'+modelo.tab_id+'"><input id="mod_minimum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm minimo border-danger" type="text" value="" disabled></td>');
 									$('#'+modelo.tab_id).append('<td id="pro_maximum_'+i+'_'+modelo.tab_id+'"><input id="mod_maximum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm maximo border-danger" type="text" value="" disabled></td>');
 								}
 							}

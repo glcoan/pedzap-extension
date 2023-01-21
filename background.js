@@ -286,7 +286,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		let propertie = model[1];
 		let value = message.model.value;
 
-		if(propertie == "price" || propertie == "maximum"){
+		if(propertie == "price" || propertie == "minimum" || propertie == "maximum"){
 			let priceIndex = model[2];
 			chrome.scripting.executeScript({
 				target: {tabId: tab_id},
