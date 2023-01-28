@@ -142,6 +142,9 @@ select.modelo, th.modelo{
 textarea, th.descricao{
 	min-width: 250px;
 }
+input.preco_titulo, th.preco_titulo{
+	min-width: 100px;
+}
 input.preco, th.preco{
 	min-width: 60px;
 	width: 60px;
@@ -157,12 +160,12 @@ input.maximo, th.maximo, th.minimo, input.minimo{
 
 input.novo-preco, th.novo-preco{
 	min-width: 40px;
-	width: 40px;;
+	width: 40px;
 }
 
 input.exclui-preco, th.exclui-preco{
 	min-width: 40px;
-	width: 40px;;
+	width: 40px;
 }
 
 input.espaco, th.espaco{
@@ -193,6 +196,10 @@ select.template, th.template{
 select.grupo, th.grupo{
 	min-width: 250px;
 	width: 250px;
+}
+
+select.status, input.sku, input.titulo, textarea, input.preco_titulo, input.preco, input.maximo, input.minimo, input.novo-preco, input.exclui-preco, input.espaco{
+	margin: auto;
 }
 
 /* ====================================== */

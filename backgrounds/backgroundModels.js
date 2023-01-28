@@ -33,16 +33,19 @@ export function editModels(){
 							status: mod_status,
 							title: document.getElementById("mod_titulo").value,
 							description: document.getElementById("mod_descricao").value,
+							price_title: [],
 							prices: [],
 							minimum: [],
 							maximum: []
 						}
 
+						var mod_pre_titulo = Array.from(document.querySelectorAll(".pre_titulo"));
 						var mod_precos = Array.from(document.querySelectorAll("[data-mask='decimal'"));
 						var mod_minimos = Array.from(document.querySelectorAll("[data-mask='inteiro'"));
 						var mod_maximos = Array.from(document.querySelectorAll("[data-mask='inteiro'"));
 
 						// Remove o primeiro registro do array
+						mod_pre_titulo.shift();
 						mod_precos.shift();
 
 						// Remove o primeiro e segudo registro do array
@@ -53,6 +56,15 @@ export function editModels(){
 						mod_precos.pop();
 						mod_minimos.pop();
 						mod_maximos.pop();
+
+						mod_pre_titulo.forEach(function(element){
+							var valor = element.getAttribute("value");
+							if(valor){
+								newModel.price_title.push(valor);
+							}else{
+								newModel.price_title.push('');
+							}
+						});
 
 						mod_precos.forEach(function(element){
 							var valor = element.getAttribute("value");
@@ -116,6 +128,12 @@ export function sendModel(propertie, value, priceIndex){
 			array[priceIndex].value = value;
 			array[priceIndex].dispatchEvent(new Event('input'));
 		}
+		if(type == "input-title"){
+			var array = Array.from(document.querySelectorAll(".pre_titulo"));
+			array.shift();
+			array[priceIndex].value = value;
+			array[priceIndex].dispatchEvent(new Event('input'));
+		}
 		if(type == "inteiro-min"){
 			var array = Array.from(document.querySelectorAll(".pre_minimo"));
 			array.shift();
@@ -151,6 +169,9 @@ export function sendModel(propertie, value, priceIndex){
 			break;
 		case 'maximum':
 			changeInput("", "inteiro-max", value, priceIndex);
+			break;
+		case 'prititle':
+			changeInput("", "input-title", value, priceIndex);
 			break;
 	}
 

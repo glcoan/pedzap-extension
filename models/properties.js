@@ -61,6 +61,16 @@ $(function(){
         }
     });
     
+    chrome.storage.local.get('pro_prititle_mod', function(data){
+        if(data.pro_prititle_mod == 'hide'){
+            setTimeout(function(){
+                changePropStatus(false, 'btn_pro_pre_titulo', true);
+                $("th.preco_titulo.prop-modelo-ext").hide();
+                $("[id^='pro_prititle_']").hide();
+            }, 1050);
+        }
+    });
+    
     chrome.storage.local.get('pro_prices_mod', function(data){
         if(data.pro_prices_mod == 'hide'){
             setTimeout(function(){
@@ -72,7 +82,7 @@ $(function(){
     });
     
     chrome.storage.local.get('pro_minimum_mod', function(data){
-        if(data.pro_maximum_mod == 'hide'){
+        if(data.pro_minimum_mod == 'hide'){
             setTimeout(function(){
                 changePropStatus(false, 'btn_pro_min', true);
                 $("th.minimo.prop-modelo-ext").hide();
@@ -186,6 +196,21 @@ $(function(){
 			chrome.storage.local.set({'pro_description_mod': 'hide'});
 		}
 	});
+
+    // Checkbox para mostrar e esconder a propriedade "titulo" dos preços dos modelos
+	$('#btn_pro_pre_titulo').click(function(){
+        if($('#btn_pro_pre_titulo').hasClass('props-disabled')){
+            changePropStatus(true, 'btn_pro_pre_titulo', true);
+            $("th.preco_titulo.prop-modelo-ext").show();
+			$("[id^='pro_prititle_']").show();
+			chrome.storage.local.set({'pro_prititle_mod': 'show'});
+		}else{
+            changePropStatus(false, 'btn_pro_pre_titulo', true);
+            $("th.preco_titulo.prop-modelo-ext").hide();
+			$("[id^='pro_prititle_']").hide();
+			chrome.storage.local.set({'pro_prititle_mod': 'hide'});
+		}
+	});
     
 	// Checkbox para mostrar e esconder a propriedade "precos" dos modelos
 	$('#btn_pro_precos').click(function(){
@@ -199,6 +224,21 @@ $(function(){
             $("th.preco.prop-modelo-ext").hide();
 			$("[id^='pro_price_']").hide();
 			chrome.storage.local.set({'pro_prices_mod': 'hide'});
+		}
+	});
+
+    // Checkbox para mostrar e esconder a propriedade "min" dos modelos
+	$('#btn_pro_min').click(function(){
+        if($('#btn_pro_min').hasClass('props-disabled')){
+            changePropStatus(true, 'btn_pro_min', true);
+            $("th.minimo.prop-modelo-ext").show();
+			$("[id^='pro_minimum']").show();
+			chrome.storage.local.set({'pro_minimum_mod': 'show'});
+		}else{
+            changePropStatus(false, 'btn_pro_min', true);
+            $("th.minimo.prop-modelo-ext").hide();
+			$("[id^='pro_minimum']").hide();
+			chrome.storage.local.set({'pro_minimum_mod': 'hide'});
 		}
 	});
 	

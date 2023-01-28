@@ -69,8 +69,8 @@ import { countTabs, closeTabItem, closeTabModel, closeTabAnswer } from "./backgr
 
 /* ALERTA DE ATUALIZAÇÃO */
 
-chrome.storage.local.get('v3_0_0', (data)=>{
-	if(!data.v3_0_0){
+chrome.storage.local.get('v3_0_4', (data)=>{
+	if(!data.v3_0_4){
 		let theme;
 		chrome.storage.local.get('theme', (data)=>{
 			if(data.theme){
@@ -102,7 +102,7 @@ setTimeout(()=>{
 				chrome.storage.local.clear();
 				
 				// Define a váriavel de versão para não aparecer o alerta denovo
-				chrome.storage.local.set({'v3_0_0': 'Mensagem de atualizacao já recebida!'});
+				chrome.storage.local.set({'v3_0_4': 'Mensagem de atualizacao já recebida!'});
 				chrome.storage.local.set({'theme': theme});
 			});
 		}else{
@@ -286,8 +286,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		let propertie = model[1];
 		let value = message.model.value;
 
-		if(propertie == "price" || propertie == "minimum" || propertie == "maximum"){
+		console.log('model: ' + model);
+		console.log('tab_id: ' + tab_id);
+		console.log('propertie: ' + propertie);
+		console.log('value: ' + value);
+
+		if(propertie == "price" || propertie == "minimum" || propertie == "maximum" || propertie == "prititle"){
 			let priceIndex = model[2];
+			console.log('priceIndex: ' + priceIndex);
 			chrome.scripting.executeScript({
 				target: {tabId: tab_id},
 				func: sendModel,

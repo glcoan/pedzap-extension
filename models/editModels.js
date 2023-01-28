@@ -181,6 +181,7 @@ $(function(){
 					chrome.storage.local.get('max_pre', function(qtde){
 						console.log('Máximo de preços em um modelo: ' + qtde.max_pre);
 						for(var i = 1; i <= qtde.max_pre; i++){
+							$("#tr_head").append('<th scope="col" class="preco_titulo prop-modelo-ext">Título '+ i +'</th>');
 							$("#tr_head").append('<th scope="col" class="preco prop-modelo-ext">Preço</th>');
 							$("#tr_head").append('<th scope="col" class="minimo prop-modelo-ext">Min</th>');
 							$("#tr_head").append('<th scope="col" class="maximo prop-modelo-ext">Max</th>');
@@ -289,6 +290,7 @@ $(function(){
 						chrome.storage.local.get('max_pre', function(qtde){
 							// Exibe os preços e máximos com base na quantidade obtida
 							for(var i = 0; i < prices; i++){
+								$('#'+modelo.tab_id).append('<td id="pro_prititle_'+i+'_'+modelo.tab_id+'"><input id="mod_prititle_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco_titulo" type="text" value="'+modelo.price_title[i]+'"></td>');
 								$('#'+modelo.tab_id).append('<td id="pro_price_'+i+'_'+modelo.tab_id+'"><input id="mod_price_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco" type="text" value="'+modelo.prices[i]+'"></td>');
 								$('#'+modelo.tab_id).append('<td id="pro_minimum_'+i+'_'+modelo.tab_id+'"><input id="mod_minimum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm minimo" type="text" value="'+modelo.minimum[i]+'"></td>');
 								$('#'+modelo.tab_id).append('<td id="pro_maximum_'+i+'_'+modelo.tab_id+'"><input id="mod_maximum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm maximo" type="text" value="'+modelo.maximum[i]+'"></td>');
@@ -297,6 +299,7 @@ $(function(){
 							// Exibe os campos desabilitados caso a quantidade de preços do modelo seja menor que a do modelo com mais preços
 							if(prices < qtde.max_pre){
 								for(var i = prices; i < qtde.max_pre; i++){
+									$('#'+modelo.tab_id).append('<td id="pro_prititle_'+i+'_'+modelo.tab_id+'"><input id="mod_prititle_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco_titulo border-danger" type="text" value="" disabled></td>');
 									$('#'+modelo.tab_id).append('<td id="pro_price_'+i+'_'+modelo.tab_id+'"><input id="mod_price_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm preco border-danger" type="text" value="" disabled></td>');
 									$('#'+modelo.tab_id).append('<td id="pro_minimum_'+i+'_'+modelo.tab_id+'"><input id="mod_minimum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm minimo border-danger" type="text" value="" disabled></td>');
 									$('#'+modelo.tab_id).append('<td id="pro_maximum_'+i+'_'+modelo.tab_id+'"><input id="mod_maximum_'+i+'_'+modelo.tab_id+'" class="form-control form-control-sm maximo border-danger" type="text" value="" disabled></td>');
