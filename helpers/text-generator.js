@@ -89,7 +89,7 @@ $(function(){
             var subdominio = document.getElementById("subdominio").value.replace(/\s+/g, '').toLowerCase();
             //Remove acentuação
             subdominio = subdominio.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-            var url = "https://"+subdominio+".pedzap.com.br\n\n";
+            var url = "https://"+subdominio+".deeliv.app\n\n";
             msg = msg+webapp+url;
             qtde_links = qtde_links+1;
         }
@@ -112,7 +112,7 @@ $(function(){
                 var robo = "🤖 Robô de atendimento:\n";
             }
             var codigo = document.getElementById("codigo").value.replace(/\s+/g, '').toUpperCase();
-            var url = "https://www.pedzap.com.br/h/"+codigo+"\n\n";
+            var url = "https://www.deeliv.app/h/"+codigo+"\n\n";
             msg = msg+robo+url;
             qtde_links = qtde_links+1;
         }

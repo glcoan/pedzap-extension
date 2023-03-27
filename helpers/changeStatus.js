@@ -1,10 +1,10 @@
 /* FUNCÕES PARA EXECUÇÃO DO HELPER (PARTE LÓGICA) */
 
-function verifyLoading(status, pedzapButtons, qtde){
+function verifyLoading(status, deelivButtons, qtde){
     let c = 0;
     let loadingFinished = true;
     document.querySelectorAll("a[href*='set_status']").forEach((btn)=>{
-        if(btn.classList == pedzapButtons[c].classList && btn.classList.contains(status) != true){
+        if(btn.classList == deelivButtons[c].classList && btn.classList.contains(status) != true){
             loadingFinished = false;
             c++;
         }
@@ -15,7 +15,7 @@ function verifyLoading(status, pedzapButtons, qtde){
         }, qtde * 100)
     }else{
         setTimeout(()=>{
-            verifyLoading(status, pedzapButtons);
+            verifyLoading(status, deelivButtons);
         }, qtde * 100)
     }
 }
@@ -26,9 +26,9 @@ function changeStatus(status){
     document.getElementById("btn_status_3") ? document.getElementById("btn_status_3").classList.add("disabled") : '';
     document.getElementById("btn_status_4") ? document.getElementById("btn_status_4").classList.add("disabled") : '';
 
-    let pedzapButtons = document.querySelectorAll("a[href*='set_status']");
+    let deelivButtons = document.querySelectorAll("a[href*='set_status']");
     let allButtonsDone = true;
-    pedzapButtons.forEach((btn)=>{
+    deelivButtons.forEach((btn)=>{
         if(btn.classList.contains(status) == false){
             allButtonsDone = false;
             btn.click();
@@ -36,7 +36,7 @@ function changeStatus(status){
     });
 
     if(allButtonsDone == false){
-        verifyLoading(status, pedzapButtons, pedzapButtons.length);
+        verifyLoading(status, deelivButtons, deelivButtons.length);
     }else{
         document.getElementById("btn_status_1") ? document.getElementById("btn_status_1").classList.remove("disabled") : '';
         document.getElementById("btn_status_2") ? document.getElementById("btn_status_2").classList.remove("disabled") : '';

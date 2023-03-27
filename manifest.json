@@ -1,9 +1,9 @@
 {
 	"manifest_version": 3,
-	"name": "Pedzap Plugin",
+	"name": "Deeliv Plugin",
 	"version": "3.0.4",
 
-	"description": "Facilita a criação/alteração de cardápios do Pedzap",
+	"description": "Facilita a criação/alteração de cardápios da Deeliv",
 
 	"author": "Gabriel Coan",
 	
@@ -14,7 +14,7 @@
 	},
 
 	"action": {
-		"default_title":"Pedzap Plugin",
+		"default_title":"Deeliv Plugin",
 		"default_popup":"popup.html",
 		"default_icon":"images/icon.png"
 	},
@@ -24,7 +24,7 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"https://www.pedzap.com.br/*"
+				"https://www.deeliv.app/*"
 			],
 			"js": [
 				"dark-mode.js"
@@ -33,7 +33,7 @@
 		},
 		{
 			"matches": [
-				"https://www.pedzap.com.br/*"
+				"https://www.deeliv.app/*"
 			],
 			"js": [
 				"content.js"
@@ -54,7 +54,7 @@
 		{
 			"resources": [ "helpers/changeStatus.js" ],
 			"matches": [
-				"https://www.pedzap.com.br/*"
+				"https://www.deeliv.app/*"
 			]
 		}
 	],

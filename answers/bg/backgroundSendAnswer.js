@@ -75,7 +75,7 @@ chrome.storage.local.get('respostas', function(data){
 	document.querySelector("link[rel~='icon']").href = "https://cdn-icons-png.flaticon.com/64/190/190411.png";
 	document.title = "Dados enviados!";
 	setTimeout(() => {
-		document.querySelector("link[rel~='icon']").href = "https://www.pedzap.com.br/public/modules/globais/administrador/img/pedzap/favicon.ico";
+		document.querySelector("link[rel~='icon']").href = "https://www.deeliv.app/public/modules/globais/estabelecimento/img/deeliv/favicon.ico";
 		document.title = pageTitle;
 	}, 5000);
 });

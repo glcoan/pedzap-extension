@@ -42,7 +42,7 @@ export function editAnswers(){
                             var tipoResposta = document.getElementById("res_tipo").selectedIndex;
                         }catch(error){
                             var res_id = document.getElementById("res_id").value;
-                            var res_url = "https://www.pedzap.com.br/estabelecimento/respostas/editar/"+res_id;
+                            var res_url = "https://www.deeliv.app/estabelecimento/respostas/editar/"+res_id;
                             window.open(res_url,"_self");
                         }
                         
@@ -222,7 +222,7 @@ export function sendAnswer(propertie, value){
 	document.querySelector("link[rel~='icon']").href = "https://cdn-icons-png.flaticon.com/64/190/190411.png";
 	document.title = "Dados enviados!";
 	var interval = setTimeout(() => {
-		document.querySelector("link[rel~='icon']").href = "https://www.pedzap.com.br/public/modules/globais/administrador/img/pedzap/favicon.ico";
+		document.querySelector("link[rel~='icon']").href = "https://www.deeliv.app/public/modules/globais/estabelecimento/img/deeliv/favicon.ico";
 		document.title = "Editar resposta";
 	}, 5000);
 }
