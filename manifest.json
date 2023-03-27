@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Deeliv Plugin",
-	"version": "3.0.4",
+	"version": "3.0.5",
 
 	"description": "Facilita a criação/alteração de cardápios da Deeliv",
 
