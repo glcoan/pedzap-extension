@@ -379,45 +379,50 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 /* CONTEXT MENU */
 console.log('Log 0: background');
+
 chrome.runtime.onInstalled.addListener(() => {
-	console.log('Log 1: onInstalled');
-	chrome.contextMenus.create({
-		"id": "mult",
-		"title": "Abrir múltiplas vezes",
-		"contexts": ["link"]
-	}, console.log('Log 2: contextMenus.create'));
-	chrome.contextMenus.onClicked.addListener(function(clickData){
-		console.log('Log 3: contextMenus.onClicked');
-		console.log('Log 3.2: Valores para serem verificados no próximo IF => '+clickData.menuItemId+' - '+clickData.linkUrl);
-		if(clickData.menuItemId == "mult" && clickData.linkUrl){
-			console.log('Log 4: clickData.menuItemId == "mult"');
-			chrome.tabs.query({currentWindow: true, active : true}, (tabs)=>{
-				console.log('Log 5: tabs.query');
-				tabs.forEach(function(tab){
-					console.log('Log 6: tabs.forEach('+tab.id+')');
-					let id = tab.id;
-					chrome.scripting.executeScript( {
-						target: {tabId: id},
-						func: (clickData)=>{
-							console.log('Log 7: scripting.executeScript');
-							let mult = prompt("Quantas abas deseja abrir?", "1");
-							mult = parseInt(mult);
-							if(Number.isInteger(mult)){
-								for(var i = 1; i <= mult; i++){
-									setTimeout(function(){
-										window.open(clickData.linkUrl);
-									}, 200 * i);
-								}
-							}else{
-								alert('Operação cancelada!')
-							}
-						},
-						args: [clickData]
-					});
-				});
-			});
-		}
-	});
+    console.log('Log 1: onInstalled');
+    chrome.contextMenus.create({
+        "id": "mult",
+        "title": "Abrir múltiplas vezes",
+        "contexts": ["link"]
+    }, () => {
+        console.log('Log 2: contextMenus.create');
+    });
+});
+
+chrome.contextMenus.onClicked.addListener(function(clickData) {
+    console.log('Log 3: contextMenus.onClicked');
+    console.log('Log 3.2: Valores para serem verificados no próximo IF => ' + clickData.menuItemId + ' - ' + clickData.linkUrl);
+    if (clickData.menuItemId === "mult" && clickData.linkUrl) {
+        console.log('Log 4: clickData.menuItemId == "mult"');
+        chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            console.log('Log 5: tabs.query');
+            tabs.forEach(function(tab) {
+                console.log('Log 6: tabs.forEach(' + tab.id + ')');
+                let id = tab.id;
+                chrome.scripting.executeScript({
+                    target: { tabId: id },
+                    func: (clickData) => {
+                        console.log('Log 7: scripting.executeScript');
+                        let mult = prompt("Quantas abas deseja abrir?", "1");
+                        mult = parseInt(mult);
+                        if (Number.isInteger(mult)) {
+                            for (var i = 1; i <= mult; i++) {
+                                setTimeout(function() {
+                                    window.open(clickData.linkUrl);
+                                }, 200 * i);
+                            }
+                        } else {
+                            alert('Operação cancelada!');
+                        }
+                    },
+                    args: [clickData]
+                });
+            });
+        });
+    }
+
 });
 
 /* ====================================== */
